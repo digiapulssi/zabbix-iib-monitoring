@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 import re
 from xmljson import abdera as ab
 from xml.etree.ElementTree import fromstring
+import ConfigParser
 
 ##### DEBUGGING #####
 # Log file path (default current directory)
@@ -71,28 +72,6 @@ datetimeFormat = "%x %X"
 
 ##### CODE #####
 
-parser = argparse.ArgumentParser(description='Connects to MQTT server and subscribes to topic(s). Edit file to modify topics.')
-parser.add_argument('ip', metavar='I', nargs=1, help='MQTT server IP')
-parser.add_argument('port', metavar='P', nargs=1, help='MQTT server port')
-
-args = parser.parse_args()
-
-BROKER_ADDRESS=args.ip[0]
-PORT=str(args.port[0])
-
-clientId = "a:quickstart:peter12345"
-filename = os.path.splitext(__file__)[0]
-targetJsonFile = "zabbix-iib-agent-data.json"
-
-conn_codes = [
-   "Connection successful",
-   "Connection refused - incorrect protocol version",
-   "Connection refused - invalid client identifier",
-   "Connection refused - server unavailable",
-   "Connection refused - bad username or password",
-   "Connection refused - not authorised"
-]
-
 def on_message(client, userdata, message):
    f=open(logPath + filename + ".log", "a+")
 
@@ -153,7 +132,7 @@ def on_message(client, userdata, message):
          if os.path.isfile(targetJsonFile):
             with open(targetJsonFile, 'r') as jsonFile:
                obj = json.load(jsonFile)
-         print(parsedJSON)
+         #print(parsedJSON)
          obj[str(message.topic)] = parsedJSON
          
          with open(targetJsonFile, 'w') as outfile:
@@ -168,7 +147,6 @@ def on_message(client, userdata, message):
          f=open(logPath + filename + ".log", "a+")
          f.write(get_timeStr() + " Error while reading JSON\n")
          f.close()
-         
 
 def on_connect(client, userdata, flags, rc):
    f=open(logPath + filename + ".log", "a+")
@@ -199,28 +177,51 @@ def on_log(client, userdata, level, buf):
    f=open(logPath + filename + ".log", "a+")
    f.write(get_timeStr() + " Log message: " + str(client) + " " + str(userdata) + " " + str(buf)  + "\n")
    f.close()
-   
+
 def get_timeStr():
    ts = time.localtime()
    timeStr = time.strftime(datetimeFormat , ts)
    return timeStr
+
+if __name__ == "__main__":
    
-
-f=open(logPath + filename + ".log", "a+")   
-f.write(get_timeStr() + " Creating new instance.\n")
-client = mqtt.Client(clientId) 
-
-client.on_connect = on_connect
-client.on_message = on_message
-client.on_subscribe = on_subscribe
-client.on_unsubscribe = on_unsubscribe
-client.on_disconnect = on_disconnect
-
-if enableLogMsg:
-   client.on_log = on_log
-
-f.write(get_timeStr() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT + "\n")
-f.close()
-client.connect( BROKER_ADDRESS, int(PORT))
-
-client.loop_forever()
+   parser = argparse.ArgumentParser(description='Connects to MQTT server and subscribes to topic(s). Edit file to modify topics.')
+   parser.add_argument('ip', metavar='I', nargs=1, help='MQTT server IP')
+   parser.add_argument('port', metavar='P', nargs=1, help='MQTT server port')
+   
+   args = parser.parse_args()
+   
+   BROKER_ADDRESS=args.ip[0]
+   PORT=str(args.port[0])
+   
+   clientId = "a:quickstart:peter12345"
+   filename = os.path.splitext(__file__)[0]
+   targetJsonFile = "zabbix-iib-agent-data.json"
+   
+   conn_codes = [
+      "Connection successful",
+      "Connection refused - incorrect protocol version",
+      "Connection refused - invalid client identifier",
+      "Connection refused - server unavailable",
+      "Connection refused - bad username or password",
+      "Connection refused - not authorised"
+   ]
+      
+   f=open(logPath + filename + ".log", "a+")   
+   f.write(get_timeStr() + " Creating new instance.\n")
+   client = mqtt.Client(clientId) 
+   
+   client.on_connect = on_connect
+   client.on_message = on_message
+   client.on_subscribe = on_subscribe
+   client.on_unsubscribe = on_unsubscribe
+   client.on_disconnect = on_disconnect
+   
+   if enableLogMsg:
+      client.on_log = on_log
+   
+   f.write(get_timeStr() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT + "\n")
+   f.close()
+   client.connect( BROKER_ADDRESS, int(PORT))
+   
+   client.loop_forever()
