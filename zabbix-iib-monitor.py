@@ -72,6 +72,19 @@ datetimeFormat = "%x %X"
 
 ##### CODE #####
 
+def ConfigSectionMap(section):
+    dict1 = {}
+    options = Config.options(section)
+    for option in options:
+        try:
+            dict1[option] = Config.get(section, option)
+            if dict1[option] == -1:
+                DebugPrint("skip: %s" % option)
+        except:
+            print("exception on %s!" % option)
+            dict1[option] = None
+    return dict1
+
 def on_message(client, userdata, message):
    f=open(logPath + filename + ".log", "a+")
 
@@ -192,7 +205,9 @@ if __name__ == "__main__":
    args = parser.parse_args()
    
    BROKER_ADDRESS=args.ip[0]
-   PORT=str(args.port[0])
+   #PORT=str(args.port[0])
+   PORT = ConfigSectionMap("GENERAL")['Port']
+   print(PORT)
    
    clientId = "a:quickstart:peter12345"
    filename = os.path.splitext(__file__)[0]
