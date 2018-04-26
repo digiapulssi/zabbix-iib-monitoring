@@ -10,6 +10,7 @@ from xml.etree.ElementTree import fromstring
 import ConfigParser
 
 Config = ConfigParser.ConfigParser()
+Config.read(os.path.splitext(__file__)[0] + ".ini")
 
 ##### DEBUGGING #####
 # Log file path (default current directory)
