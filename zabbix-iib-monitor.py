@@ -186,7 +186,7 @@ if __name__ == "__main__":
    
    BROKER_ADDRESS=args.ip[0]
    #PORT=str(args.port[0])
-   PORT = ConfigSectionMap("GENERAL")['Port']
+   PORT = ConfigSectionMap("GENERAL")['port']
    print(PORT)
    
    clientId = "a:quickstart:peter12345"
