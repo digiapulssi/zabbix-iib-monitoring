@@ -164,6 +164,7 @@ def get_timeStr():
 
 if __name__ == "__main__":
    logPath = ConfigSectionMap("LOGGING")['logpath']
+   
    enableLogMsg = config.getboolean("LOGGING", "enablelogmsg")
    printMsg = config.getboolean("LOGGING", "printmsg")
    
@@ -172,6 +173,7 @@ if __name__ == "__main__":
    
    clientId = ConfigSectionMap("GENERAL")['clientid']
    filename = os.path.splitext(__file__)[0]
+   print(logPath + filename + ".log")
    targetJsonFile = ConfigSectionMap("GENERAL")['jsonfilename']
    
    conn_codes = [
