@@ -51,7 +51,7 @@ def ConfigSectionMap(section):
     return dict1
 
 def on_message(client, userdata, message):
-   f=open(logPath + filename + ".log", "a+")
+   f=open(logFileName, "a+")
 
    if printMsg:
       f.write(get_timeStr() + " Message Recieved: " + str(message.payload.decode("utf-8") + "\n"))
@@ -69,22 +69,22 @@ def on_message(client, userdata, message):
    obj = {}
    if match == None:
       print("JSON Topic")
-      if os.path.isfile(targetJsonFile):
+      if os.path.isfile(jsonFileName):
          try:
-            with open(targetJsonFile, 'r') as jsonFile:
+            with open(jsonFileName, 'r') as jsonFile:
                obj = json.load(jsonFile)
                
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
                   
-            with open(targetJsonFile, 'w') as outfile:
+            with open(jsonFileName, 'w') as outfile:
                json.dump(obj, outfile)
-               f=open(logPath + filename + ".log", "a+")
+               f=open(logFileName, "a+")
                f.write(get_timeStr() + " Write Complete\n")
                print("Write Complete")
                f.close()
             
          except ValueError: 
-            f=open(logPath + filename + ".log", "a+")
+            f=open(logFileName, "a+")
             f.write(get_timeStr() + " Error while reading JSON\n")
             f.close()
       
@@ -92,14 +92,14 @@ def on_message(client, userdata, message):
          try:
             jsonObj = {}
             jsonObj[message.topic] = str(message.payload.decode("utf-8"))
-            with open(targetJsonFile, 'w') as outfile:
+            with open(jsonFileName, 'w') as outfile:
                json.dump(jsonObj, outfile)
-               f=open(logPath + filename + ".log", "a+")
+               f=open(logFileName, "a+")
                f.write(get_timeStr() + " Write Complete\n")
                f.close()
                
          except ValueError: 
-            f=open(logPath + filename + ".log", "a+")
+            f=open(logFileName, "a+")
             f.write(get_timeStr() + " Error while writing to JSON file\n")
             f.close()
    else:
@@ -107,43 +107,43 @@ def on_message(client, userdata, message):
       parsedJSON = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
       try:
-         if os.path.isfile(targetJsonFile):
-            with open(targetJsonFile, 'r') as jsonFile:
+         if os.path.isfile(jsonFileName):
+            with open(jsonFileName, 'r') as jsonFile:
                obj = json.load(jsonFile)
          #print(parsedJSON)
          obj[str(message.topic)] = parsedJSON
          
-         with open(targetJsonFile, 'w') as outfile:
+         with open(jsonFileName, 'w') as outfile:
             json.dump(obj, outfile)
             
-            f=open(logPath + filename + ".log", "a+")
+            f=open(logFileName, "a+")
             f.write(get_timeStr() + " Write Complete\n")
             print("Write Complete")
             f.close()
          
       except ValueError: 
-         f=open(logPath + filename + ".log", "a+")
+         f=open(logFileName, "a+")
          f.write(get_timeStr() + " Error while reading JSON\n")
          f.close()
 
 def on_connect(client, userdata, flags, rc):
-   f=open(logPath + filename + ".log", "a+")
+   f=open(logFileName, "a+")
    f.write(get_timeStr() + " " + conn_codes[rc] + ". (code " + str(rc) + ")\n")
    f.close()
    client.subscribe(TOPICS)
 
 def on_subscribe(client, userdata, mid, granted_qos):
-   f=open(logPath + filename + ".log", "a+")
+   f=open(logFileName, "a+")
    f.write(get_timeStr() + " Successfuly subscribed to topic(s)\n")
    f.close()
 
 def on_unsubscribe(client, userdata, mid):
-   f=open(logPath + filename + ".log", "a+")
+   f=open(logFileName, "a+")
    f.write(get_timeStr() + " Unsubscribed from " + TOPIC + "\n")
    f.close()
 
 def on_disconnect(client, userdata, rc):
-   f=open(logPath + filename + ".log", "a+")
+   f=open(logFileName, "a+")
 
    if rc != 0:
       f.write(get_timeStr() + " Unexpected disconnection.\n")
@@ -152,29 +152,32 @@ def on_disconnect(client, userdata, rc):
    f.close()
 
 def on_log(client, userdata, level, buf):
-   f=open(logPath + filename + ".log", "a+")
+   f=open(logFileName, "a+")
    f.write(get_timeStr() + " Log message: " + str(client) + " " + str(userdata) + " " + str(buf)  + "\n")
    f.close()
 
 def get_timeStr():
    datetimeFormat = ConfigSectionMap("LOGGING")['datetimeformat']
+   # if datetimeFormat == ""
+      # datetimeFormat = "%Y-%m-%d %H:%M:%S"
    ts = time.localtime()
    timeStr = time.strftime(datetimeFormat , ts)
    return timeStr
 
 if __name__ == "__main__":
    logPath = ConfigSectionMap("LOGGING")['logpath']
+   JsonFilePath = ConfigSectionMap("LOGGING")['JsonFilePath']
    
    enableLogMsg = config.getboolean("LOGGING", "enablelogmsg")
    printMsg = config.getboolean("LOGGING", "printmsg")
    
    BROKER_ADDRESS = ConfigSectionMap("GENERAL")['ip']
    PORT = ConfigSectionMap("GENERAL")['port']
-   
    clientId = ConfigSectionMap("GENERAL")['clientid']
+   
    filename = os.path.splitext(__file__)[0]
-   print(logPath + filename + ".log")
-   targetJsonFile = ConfigSectionMap("GENERAL")['jsonfilename']
+   jsonFileName = JsonFilePath + filename + "-agent-data.json"
+   logFileName = logPath + filename + ".log"
    
    conn_codes = [
       "Connection successful",
@@ -185,7 +188,7 @@ if __name__ == "__main__":
       "Connection refused - not authorised"
    ]
       
-   f=open(logPath + filename + ".log", "a+")   
+   f=open(logFileName, "a+")   
    f.write(get_timeStr() + " Creating new instance.\n")
    client = mqtt.Client(clientId) 
    
