@@ -1,5 +1,4 @@
 import paho.mqtt.client as mqtt
-# import argparse
 import json
 import time
 import os
@@ -12,9 +11,6 @@ import ConfigParser
 config = ConfigParser.ConfigParser()
 confFile = config.read(os.path.splitext(__file__)[0] + ".ini")
 conf_sections = config.sections()
-
-##### DEBUGGING #####
-
 
 ##### TOPICS #####
 #
@@ -41,10 +37,8 @@ TOPICS= [
 ##### CODE #####
 
 def ConfigSectionMap(section):
-    print(section)
     dict1 = {}
     options = config.options(section)
-    print(options)
     for option in options:
         try:
             dict1[option] = config.get(section, option)
@@ -168,20 +162,8 @@ def get_timeStr():
    return timeStr
 
 if __name__ == "__main__":
-   
-   # parser = argparse.ArgumentParser(description='Connects to MQTT server and subscribes to topic(s). Edit file to modify topics.')
-   # parser.add_argument('ip', metavar='I', nargs=1, help='MQTT server IP')
-   # parser.add_argument('port', metavar='P', nargs=1, help='MQTT server port')
-   
-   # args = parser.parse_args()
-   
-   # Log file path (default current directory)
    logPath = ConfigSectionMap("LOGGING")['logpath']
-
-   # enable/disable MQTT log messages
    enableLogMsg = config.getboolean("LOGGING", "enablelogmsg")
-
-   # print message contents log file
    printMsg = config.getboolean("LOGGING", "printmsg")
    
    BROKER_ADDRESS = ConfigSectionMap("GENERAL")['ip']
