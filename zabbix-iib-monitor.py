@@ -52,11 +52,11 @@ TOPICS= [
 def ConfigSectionMap(section):
     print(section)
     dict1 = {}
-    options = Config.options(section)
+    options = config.options(section)
     print(options)
     for option in options:
         try:
-            dict1[option] = Config.get(section, option)
+            dict1[option] = config.get(section, option)
             if dict1[option] == -1:
                 DebugPrint("skip: %s" % option)
         except:
