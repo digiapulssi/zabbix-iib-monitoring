@@ -166,7 +166,7 @@ def get_timeStr():
 
 if __name__ == "__main__":
    logPath = ConfigSectionMap("LOGGING")['logpath']
-   JsonFilePath = ConfigSectionMap("LOGGING")['JsonFilePath']
+   JsonFilePath = ConfigSectionMap("LOGGING")['jsonfilepath']
    
    enableLogMsg = config.getboolean("LOGGING", "enablelogmsg")
    printMsg = config.getboolean("LOGGING", "printmsg")
