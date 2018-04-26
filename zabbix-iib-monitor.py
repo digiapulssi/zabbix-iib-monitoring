@@ -68,7 +68,7 @@ LOG TIME FORMATING
 %Z 	Time zone name (no characters if no time zone exists). 	 
 %% 	A literal '%' character. 	 
 '''
-datetimeFormat = "%x %X"
+datetimeFormat = ConfigSectionMap("LOGGING")['DatetimeFormat']
 
 ##### CODE #####
 
