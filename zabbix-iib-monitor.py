@@ -11,6 +11,7 @@ import ConfigParser
 
 Config = ConfigParser.ConfigParser()
 Config.read(os.path.splitext(__file__)[0] + ".ini")
+Config.sections()
 
 ##### DEBUGGING #####
 # Log file path (default current directory)
