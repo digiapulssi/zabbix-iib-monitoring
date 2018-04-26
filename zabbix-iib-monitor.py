@@ -44,9 +44,13 @@ def ConfigSectionMap(section):
         try:
             dict1[option] = config.get(section, option)
             if dict1[option] == -1:
-                DebugPrint("skip: %s" % option)
+               f=open(logFileName, "a+")
+               f.write(get_timeStr() + " Configuration file, skip: %s" % option)
+               f.close()
         except:
-            print("exception on %s!" % option)
+            f=open(logFileName, "a+")
+            f.write(get_timeStr() + " Exception with configuration file on %s!" % option)
+            f.close()
             dict1[option] = None
     return dict1
 
@@ -61,14 +65,12 @@ def on_message(client, userdata, message):
    else:
       f.write(get_timeStr() +  " Message from topic: " + message.topic + "\n")
    f.close()
-   print(message.topic)
    
    pattern = "(IBM/IntegrationBus/(\w+)/Status/ExecutionGroup/(\w+))|(IBM/IntegrationBus/(\w+)/Status)"
    match = re.match(pattern, message.topic)
    
    obj = {}
    if match == None:
-      print("JSON Topic")
       if os.path.isfile(jsonFileName):
          try:
             with open(jsonFileName, 'r') as jsonFile:
@@ -80,7 +82,6 @@ def on_message(client, userdata, message):
                json.dump(obj, outfile)
                f=open(logFileName, "a+")
                f.write(get_timeStr() + " Write Complete\n")
-               print("Write Complete")
                f.close()
             
          except ValueError: 
@@ -103,14 +104,13 @@ def on_message(client, userdata, message):
             f.write(get_timeStr() + " Error while writing to JSON file\n")
             f.close()
    else:
-      print("XML Topic")
       parsedJSON = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
       try:
          if os.path.isfile(jsonFileName):
             with open(jsonFileName, 'r') as jsonFile:
                obj = json.load(jsonFile)
-         #print(parsedJSON)
+               
          obj[str(message.topic)] = parsedJSON
          
          with open(jsonFileName, 'w') as outfile:
@@ -118,7 +118,6 @@ def on_message(client, userdata, message):
             
             f=open(logFileName, "a+")
             f.write(get_timeStr() + " Write Complete\n")
-            print("Write Complete")
             f.close()
          
       except ValueError: 
