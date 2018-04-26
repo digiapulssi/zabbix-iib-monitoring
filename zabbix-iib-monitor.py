@@ -9,6 +9,8 @@ from xmljson import abdera as ab
 from xml.etree.ElementTree import fromstring
 import ConfigParser
 
+Config = ConfigParser.ConfigParser()
+
 ##### DEBUGGING #####
 # Log file path (default current directory)
 logPath = ""
@@ -198,7 +200,6 @@ def get_timeStr():
 
 if __name__ == "__main__":
    
-   Config = ConfigParser.ConfigParser()
    parser = argparse.ArgumentParser(description='Connects to MQTT server and subscribes to topic(s). Edit file to modify topics.')
    parser.add_argument('ip', metavar='I', nargs=1, help='MQTT server IP')
    parser.add_argument('port', metavar='P', nargs=1, help='MQTT server port')
