@@ -14,14 +14,7 @@ confFile = config.read(os.path.splitext(__file__)[0] + ".ini")
 conf_sections = config.sections()
 
 ##### DEBUGGING #####
-# Log file path (default current directory)
-logPath = ConfigSectionMap("LOGGING")['logpath']
 
-# enable/disable MQTT log messages
-enableLogMsg = config.getboolean("LOGGING", "enablelogmsg")
-
-# print message contents log file
-printMsg = config.getboolean("LOGGING", "printmsg")
 
 ##### TOPICS #####
 #
@@ -181,6 +174,15 @@ if __name__ == "__main__":
    # parser.add_argument('port', metavar='P', nargs=1, help='MQTT server port')
    
    # args = parser.parse_args()
+   
+   # Log file path (default current directory)
+   logPath = ConfigSectionMap("LOGGING")['logpath']
+
+   # enable/disable MQTT log messages
+   enableLogMsg = config.getboolean("LOGGING", "enablelogmsg")
+
+   # print message contents log file
+   printMsg = config.getboolean("LOGGING", "printmsg")
    
    BROKER_ADDRESS = ConfigSectionMap("GENERAL")['ip']
    PORT = ConfigSectionMap("GENERAL")['port']
