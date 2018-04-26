@@ -9,11 +9,11 @@ from xmljson import abdera as ab
 from xml.etree.ElementTree import fromstring
 import ConfigParser
 
-Config = ConfigParser.ConfigParser()
-print(os.path.splitext(__file__)[0] + ".ini")
-Config.read(os.path.splitext(__file__)[0] + ".ini")
-Config.sections()
-print(Config.sections())
+config = ConfigParser.ConfigParser()
+#print(os.path.splitext(__file__)[0] + ".ini")
+confFile = config.read(os.path.splitext(__file__)[0] + ".ini")
+conf_sections = config.sections()
+#print(Config.sections())
 
 ##### DEBUGGING #####
 # Log file path (default current directory)
@@ -50,8 +50,10 @@ TOPICS= [
 ##### CODE #####
 
 def ConfigSectionMap(section):
+    print(section)
     dict1 = {}
     options = Config.options(section)
+    print(options)
     for option in options:
         try:
             dict1[option] = Config.get(section, option)
