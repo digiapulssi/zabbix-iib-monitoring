@@ -158,8 +158,6 @@ def on_log(client, userdata, level, buf):
 
 def get_timeStr():
    datetimeFormat = ConfigSectionMap("LOGGING")['datetimeformat']
-   # if datetimeFormat == ""
-      # datetimeFormat = "%Y-%m-%d %H:%M:%S"
    ts = time.localtime()
    timeStr = time.strftime(datetimeFormat , ts)
    return timeStr
