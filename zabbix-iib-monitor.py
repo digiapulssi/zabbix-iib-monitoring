@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-import argparse
+# import argparse
 import json
 import time
 import os
@@ -10,20 +10,18 @@ from xml.etree.ElementTree import fromstring
 import ConfigParser
 
 config = ConfigParser.ConfigParser()
-#print(os.path.splitext(__file__)[0] + ".ini")
 confFile = config.read(os.path.splitext(__file__)[0] + ".ini")
 conf_sections = config.sections()
-#print(Config.sections())
 
 ##### DEBUGGING #####
 # Log file path (default current directory)
-logPath = ""
+logPath = ConfigSectionMap("LOGGING")['logpath']
 
 # enable/disable MQTT log messages
-enableLogMsg = False
+enableLogMsg = config.getboolean("LOGGING", "enablelogmsg")
 
 # print message contents log file
-printMsg = False
+printMsg = config.getboolean("LOGGING", "printmsg")
 
 ##### TOPICS #####
 #
@@ -171,27 +169,25 @@ def on_log(client, userdata, level, buf):
    f.close()
 
 def get_timeStr():
-   datetimeFormat = ConfigSectionMap("LOGGING")['DatetimeFormat']
+   datetimeFormat = ConfigSectionMap("LOGGING")['datetimeformat']
    ts = time.localtime()
    timeStr = time.strftime(datetimeFormat , ts)
    return timeStr
 
 if __name__ == "__main__":
    
-   parser = argparse.ArgumentParser(description='Connects to MQTT server and subscribes to topic(s). Edit file to modify topics.')
-   parser.add_argument('ip', metavar='I', nargs=1, help='MQTT server IP')
-   parser.add_argument('port', metavar='P', nargs=1, help='MQTT server port')
+   # parser = argparse.ArgumentParser(description='Connects to MQTT server and subscribes to topic(s). Edit file to modify topics.')
+   # parser.add_argument('ip', metavar='I', nargs=1, help='MQTT server IP')
+   # parser.add_argument('port', metavar='P', nargs=1, help='MQTT server port')
    
-   args = parser.parse_args()
+   # args = parser.parse_args()
    
-   BROKER_ADDRESS=args.ip[0]
-   #PORT=str(args.port[0])
+   BROKER_ADDRESS = ConfigSectionMap("GENERAL")['ip']
    PORT = ConfigSectionMap("GENERAL")['port']
-   print(PORT)
    
-   clientId = "a:quickstart:peter12345"
+   clientId = ConfigSectionMap("GENERAL")['clientid']
    filename = os.path.splitext(__file__)[0]
-   targetJsonFile = "zabbix-iib-agent-data.json"
+   targetJsonFile = ConfigSectionMap("GENERAL")['jsonfilename']
    
    conn_codes = [
       "Connection successful",
