@@ -8,9 +8,9 @@ from xmljson import abdera as ab
 from xml.etree.ElementTree import fromstring
 import ConfigParser
 
-config = ConfigParser.ConfigParser()
-confFile = config.read(os.path.splitext(__file__)[0] + ".ini")
-conf_sections = config.sections()
+##### CONFIG #####
+# path to config file
+configFile = "zabbix-iib-monitor.ini"
 
 ##### TOPICS #####
 #
@@ -36,6 +36,10 @@ TOPICS= [
 ]
 
 ##### CODE #####
+
+config = ConfigParser.ConfigParser()
+confFile = config.read(configFile)
+conf_sections = config.sections()
 
 def ConfigSectionMap(section):
     dict1 = {}
