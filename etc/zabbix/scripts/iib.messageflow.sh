@@ -1,4 +1,4 @@
 #!/bin/bash
 #
 
-cat zabbix-iib-monitor-agent-data.json | jq '."$1".WMQIStatisticsAccounting.MessageFlow.$2'
+cat zabbix-iib-monitor-agent-data.json | jq --arg TOPIC "$1" --arg DATA "$2" '.[$TOPIC].WMQIStatisticsAccounting.MessageFlow.[$DATA]'
