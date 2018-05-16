@@ -11,13 +11,10 @@ This project contains scripts for listening to IBM Integration Bus MQTT messages
 ## Usage
 
 * Activate messageflow data collection in IBM Integration Console with command:
-
-´´´
+```
 mqsichangeflowstats yourNodeName -g -j -s -o json -c active
-´´´
-
-("-g" = all integration servers, "-j" = all message flows, "-s" = snapshot publishing, "-o json" = output format "json", -"c active" = control enable data collection, use command ´´´mqsichangeflowstats´´´ to see all options)
-
+```
+("-g" = all integration servers, "-j" = all message flows, "-s" = snapshot publishing, "-o json" = output format "json", -"c active" = control enable data collection, use command ```mqsichangeflowstats``` to see all options)
 *NOTE: Data collection is off by default and must be reactivated after (re)deployment!*
 
 * Run "zabbix-iib-monitoring.py" (check "zabbix-iib-monitoring.ini" for connection settings) to start recieving monitoring data
