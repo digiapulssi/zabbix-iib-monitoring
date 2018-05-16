@@ -16,7 +16,7 @@ mqsichangeflowstats yourNodeName -g -j -s -o json -c active
 ```
 ("-g" = all integration servers, "-j" = all message flows, "-s" = snapshot publishing, "-o json" = output format "json", -"c active" = control enable data collection, use command ```mqsichangeflowstats``` to see all options)
 
-**_NOTE_: Data collection is off by default and must be reactivated after (re)deployment!**
+**_NOTE_: Messageflow data collection is off by default and must be reactivated after (re)deployment!**
 
 * Run "zabbix-iib-monitoring.py" (check "zabbix-iib-monitoring.ini" for connection settings) to start recieving monitoring data
 * Add iib.mqtt_topic.discovery to host/template
