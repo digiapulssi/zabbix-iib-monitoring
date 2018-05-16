@@ -23,7 +23,7 @@ configFile = "zabbix-iib-monitor.ini"
 
 integrationNodeName = "+"
 integrationServerName = "+"
-applicationName= "#"
+applicationName= "+"
 messageFlowName = "+"
 
 # Topics that will be subscribed to
@@ -32,7 +32,6 @@ TOPICS= [
    ("IBM/IntegrationBus/" + integrationNodeName + "/Status", 0),
    ("IBM/IntegrationBus/" + integrationNodeName + "/Status/ExecutionGroup/" + integrationServerName, 0) ,
    ("IBM/IntegrationBus/" + integrationNodeName + "/Statistics/JSON/SnapShot/" + integrationServerName + "/applications/" + applicationName + "/messageflows/" + messageFlowName, 0)
-   
 ]
 
 ##### CODE #####
