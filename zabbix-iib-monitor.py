@@ -31,7 +31,8 @@ messageFlowName = "+"
 TOPICS= [                           
    ("IBM/IntegrationBus/" + integrationNodeName + "/Status", 0),
    ("IBM/IntegrationBus/" + integrationNodeName + "/Status/ExecutionGroup/" + integrationServerName, 0) ,
-   ("IBM/IntegrationBus/" + integrationNodeName + "/Statistics/JSON/SnapShot/" + integrationServerName + "/applications/" + applicationName + "/messageflows/" + messageFlowName, 0)
+   ("IBM/IntegrationBus/" + integrationNodeName + "/Statistics/JSON/Archive/" + integrationServerName + "/applications/" + applicationName + "/messageflows/" + messageFlowName, 0),
+   ("IBM/IntegrationBus/" + integrationNodeName + "/Statistics/JSON/Snapshot/" + integrationServerName + "/applications/" + applicationName + "/messageflows/" + messageFlowName, 0)
 ]
 
 ##### CODE #####
