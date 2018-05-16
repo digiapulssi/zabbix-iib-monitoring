@@ -18,6 +18,7 @@ mqsichangeflowstats yourNodeName -g -j -a -o json -c active
 
 **NOTE: Messageflow data collection is off by default and must be reactivated after (re)deployment!**
 
+
 2. Change data collection interval for integration node with command:
 
 **NOTE: Integration node needs to be shutdown first**
