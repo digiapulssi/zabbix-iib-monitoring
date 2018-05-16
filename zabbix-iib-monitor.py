@@ -23,7 +23,7 @@ configFile = "zabbix-iib-monitor.ini"
 
 integrationNodeName = "+"
 integrationServerName = "+"
-applicationName= "+"
+applicationName= "#"
 messageFlowName = "+"
 
 # Topics that will be subscribed to
