@@ -6,7 +6,7 @@ This project contains scripts for listening to IBM Integration Bus MQTT messages
 
 1. Copy the files under [etc/zabbix/scripts](etc/zabbix/scripts) to `/etc/zabbix/scripts`
 2. Copy the files under [etc/zabbix/zabbix_agentd.d](etc/zabbix/zabbix_agentd.d) to `/etc/zabbix/zabbix_agentd.d`
-3. Copy "zabbix-iib-monitoring.py" and "zabbix-iib-monitoring.ini" anywhere on the agent machine (does **not** require to be local with IBM Integration Bus)
+3. Copy "zabbix-iib-monitoring.py" and "zabbix-iib-monitoring.ini" anywhere on the agent machine. (This script does **not require** to be local with IBM Integration Bus, although you will need to change the bind address of each node you want to connect from the outside. Bind address can be found in file at C:\ProgramData\IBM\MQSI\components\nodeName\config\nodeName)
 
 ## Usage
 
