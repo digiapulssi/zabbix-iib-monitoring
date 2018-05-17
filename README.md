@@ -10,6 +10,8 @@ This project contains scripts for listening to IBM Integration Bus MQTT messages
 
 ## Usage
 
+### IBM Integration Bus
+
 1. Activate messageflow data collection for integration node in IBM Integration Console with command:
 ```
 mqsichangeflowstats yourNodeName -g -j -a -o json -c active
@@ -27,7 +29,17 @@ mqsichangebroker yourNodeName -v 1
 ```
 ("-v" = data collection interval, in minutes, min 1 max 43200)
 
+### Scripts & Zabbix
+
 3. Run "zabbix-iib-monitoring.py" (check "zabbix-iib-monitoring.ini" for connection settings) to start recieving monitoring data
-4. Add iib.mqtt_topic.discovery to host/template
+
+4. Add 3 iib.mqtt_topic.discovery to host/template
+   - Use key "iib.mqtt_topic.discovery[]" with parameter "node", "server" or "messageflow" (one of each)
+   - Set filter ```"{#TOPIC_NODE}" matches "^IBM/IntegrationBus/[A-Za-z0-9]*/Status$"``` for "iib.mqtt_topic.discovery[node]"
+   - Set filter ```"{#TOPIC_SERVER}" matches "^IBM/IntegrationBus/[A-Za-z0-9]*/Status/ExecutionGroup/[A-Za-z0-9]*$"``` for "iib.mqtt_topic.discovery[server]"
+   - Set filter ```"{#TOPIC_MESSAGEFLOW}" matches "^IBM/IntegrationBus/[A-Za-z0-9]*/Statistics/JSON/Archive"``` for "iib.mqtt_topic.discovery[messageflow]"
 5. Add items to host/template
+   - Use key "iib.messageflow[{TOPIC_MESSAGEFLOW}, dataName]" where "datanName" is the monitoring data field name (leave empty to see all fields)
+   - Use key "iib.node.status[{TOPIC_NODE}] to get updates on node status
+   - Use key "iib.server.status[{TOPIC_SERVER}]" to get updates on server status
 
