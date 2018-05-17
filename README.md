@@ -25,7 +25,7 @@ mqsichangeflowstats yourNodeName -g -j -a -o json -c active
 
 **NOTE: Integration node needs to be shutdown first**
 ```
-mqsichangebroker yourNodeName -v 1
+mqsichangebroker yourNodeName -v 10
 ```
 ("-v" = data collection interval, in minutes, min 1 max 43200)
 
