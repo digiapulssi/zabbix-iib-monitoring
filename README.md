@@ -39,7 +39,7 @@ mqsichangebroker yourNodeName -v 1
    - Set filter ```"{#TOPIC_SERVER}" matches "^IBM/IntegrationBus/[A-Za-z0-9]*/Status/ExecutionGroup/[A-Za-z0-9]*$"``` for "iib.mqtt_topic.discovery[server]"
    - Set filter ```"{#TOPIC_MESSAGEFLOW}" matches "^IBM/IntegrationBus/[A-Za-z0-9]*/Statistics/JSON/Archive"``` for "iib.mqtt_topic.discovery[messageflow]"
 5. Add items to host/template
-   - Use key "iib.messageflow[{TOPIC_MESSAGEFLOW}, dataName]" where "datanName" is the monitoring data field name (leave empty to see all fields)
+   - Use key "iib.messageflow[{TOPIC_MESSAGEFLOW}, *dataFieldName*]" where "*dataFieldName*" is the monitoring data field name (leave empty to see all fields)
    - Use key "iib.node.status[{TOPIC_NODE}] to get updates on node status
    - Use key "iib.server.status[{TOPIC_SERVER}]" to get updates on server status
 
