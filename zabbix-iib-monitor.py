@@ -186,7 +186,7 @@ if __name__ == "__main__":
    f=open(jsonFile, "r+")
    logging.basicConfig(filename=logFile, filemode='a',format='%(asctime)s  %(levelname)s: %(message)s')
    broker_list=open(brokers, 'r')
-   brokers = broker_list.readfiles()
+   brokers = broker_list.readlines()
    
    threads = []
    for i in range (len(open(brokers).readlines())):
