@@ -169,6 +169,10 @@ if __name__ == "__main__":
    jsonFile = ConfigSectionMap("CONFIG")['jsonfile']
    printMsg = config.getboolean("CONFIG", "printmsg")
    brokers_file = ConfigSectionMap("CONFIG")['brokers']
+   
+   if !os.path.isfile(jsonFile):
+      tmp=open(jsonFile,"w+")
+      tmp.write(json.dumps("{}"))
       
    dataFile = open(jsonFile, "r+")
    logging.basicConfig(filename=logFile, filemode='a', level=logging.DEBUG, format='%(asctime)s  %(levelname)s: %(message)s')
