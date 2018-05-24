@@ -152,21 +152,24 @@ def get_timeStr():
    return timeStr
    
 def thread_MQTT(BROKER_ADDRESS,PORT,id):
-   client = mqtt.Client(id) 
-   
-   client.on_connect = on_connect
-   client.on_message = on_message
-   client.on_subscribe = on_subscribe
-   client.on_unsubscribe = on_unsubscribe
-   client.on_disconnect = on_disconnect
-   
-   if enableLogMsg:
-      client.on_log = on_log
-   
-   logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT + " with id: " + id + "\n")
-   client.connect( BROKER_ADDRESS, int(PORT))
-   
-   client.loop_forever()
+   try:
+      client = mqtt.Client(id) 
+      
+      client.on_connect = on_connect
+      client.on_message = on_message
+      client.on_subscribe = on_subscribe
+      client.on_unsubscribe = on_unsubscribe
+      client.on_disconnect = on_disconnect
+      
+      if enableLogMsg:
+         client.on_log = on_log
+      
+      logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT + " with id: " + id + "\n")
+      client.connect( BROKER_ADDRESS, int(PORT))
+      
+      client.loop_forever()
+   except (KeyboardInterrupt, SystemExit):
+      logging.warning('Received keyboard interrupt, quitting threads.')
 
 if __name__ == "__main__":
    logFile = ConfigSectionMap("CONFIG")['logfile']
