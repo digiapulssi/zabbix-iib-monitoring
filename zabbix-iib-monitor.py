@@ -191,19 +191,22 @@ if __name__ == "__main__":
    
    broker_list=open(brokers_file, 'r')
    brokers = broker_list.readlines()
-   
-   threads = []
-   for i in range (len(brokers)):
-      b=brokers[i].split(',')
-      print b[0],b[1],b[2]
-      t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],b[2]))
-      threads.append(t)
-      t.start()
-   
-   while threading.activeCount() > 1:
-      pass
-   else:
-      f.close()
+   try:
+      threads = []
+      for i in range (len(brokers)):
+         b=brokers[i].split(',')
+         print b[0],b[1],b[2]
+         t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],b[2]))
+         threads.append(t)
+         t.start()
+      
+      while threading.activeCount() > 1:
+         pass
+      else:
+         f.close()
+      
+   except (KeyboardInterrupt, SystemExit):
+      logging.warning('Received keyboard interrupt, quitting threads.')
    
    '''
    client = mqtt.Client(clientId) 
