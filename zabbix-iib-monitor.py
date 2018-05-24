@@ -71,6 +71,7 @@ def on_message(client, userdata, message):
    
    obj = {}
    if match == None:
+      logging.info("os.path.isfile(jsonFile): " + os.path.isfile(jsonFile) + " f.readlines() " + f.readlines())
       if os.path.isfile(jsonFile) and f.readlines() > 0:
          try:
             jsonStr = f.read()
@@ -82,7 +83,7 @@ def on_message(client, userdata, message):
             logging.info("Write Complete")
             
          except ValueError: 
-            logging.error("Error while reading JSON 1")
+            logging.error("Error while reading JSON")
       
       else:
          try:
@@ -97,6 +98,7 @@ def on_message(client, userdata, message):
       parsedJSON = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
       try:
+         logging.info("os.path.isfile(jsonFile): " + os.path.isfile(jsonFile))
          if os.path.isfile(jsonFile):
             jsonStr = f.read()
             obj = json.loads(jsonStr)
@@ -107,7 +109,7 @@ def on_message(client, userdata, message):
          logging.info("Write Complete")
          
       except ValueError: 
-         logging.error("Error while reading JSON 2")
+         logging.error("Error while reading JSON")
 
 def on_connect(client, userdata, flags, rc):
    conn_codes = [
