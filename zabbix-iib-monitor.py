@@ -77,10 +77,9 @@ def on_message(client, userdata, message):
             obj = json.loads(jsonStr)
                
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
-                  
-            with open(jsonFile, 'w') as outfile:
-               json.dump(obj, outfile)
-               logging.info("Write Complete")
+            
+            f.write(json.dumps(obj))
+            logging.info("Write Complete")
             
          except ValueError: 
             logging.error("Error while reading JSON")
@@ -89,9 +88,8 @@ def on_message(client, userdata, message):
          try:
             jsonObj = {}
             jsonObj[message.topic] = str(message.payload.decode("utf-8"))
-            with open(jsonFile, 'w') as outfile:
-               json.dump(jsonObj, outfile)
-               logging.info("Write Complete\n")
+            f.write(json.dumps(obj))
+            logging.info("Write Complete\n")
                
          except ValueError: 
             logging.error("Error while writing to JSON file")
@@ -105,10 +103,8 @@ def on_message(client, userdata, message):
                
          obj[str(message.topic)] = parsedJSON
          
-         with open(jsonFile, 'w') as outfile:
-            json.dump(obj, outfile)
-            
-            logging.info("Write Complete")
+         f.write(json.dumps(obj))
+         logging.info("Write Complete")
          
       except ValueError: 
          logging.error("Error while reading JSON")
@@ -141,9 +137,6 @@ def on_disconnect(client, userdata, rc):
 
 def on_log(client, userdata, level, buf):
    logging.info("Log message: " + str(client) + " " + str(userdata) + " " + str(buf))
-   #f=open(logFile, "a+")
-   #logging.info(get_timeStr() + " Log message: " + str(client) + " " + str(userdata) + " " + str(buf)  + "\n")
-   #f.close()
 
 def get_timeStr():
    datetimeFormat = ConfigSectionMap("CONFIG")['datetimeformat']
@@ -179,50 +172,23 @@ if __name__ == "__main__":
    printMsg = config.getboolean("CONFIG", "printmsg")
    
    brokers_file = ConfigSectionMap("CONFIG")['brokers']
-   
-   #BROKER_ADDRESS = ConfigSectionMap("CONFIG")['ip']
-   #PORT = ConfigSectionMap("CONFIG")['port']
-   #clientId = ConfigSectionMap("CONFIG")['clientid']
-   
-   #filename = os.path.splitext(__file__)[0]
       
    f=open(jsonFile, "w+")
    logging.basicConfig(filename=logFile, filemode='a',format='%(asctime)s  %(levelname)s: %(message)s')
    
    broker_list=open(brokers_file, 'r')
    brokers = broker_list.readlines()
-   try:
-      threads = []
-      for i in range (len(brokers)):
-         b=brokers[i].split(',')
-         print b[0],b[1],b[2]
-         t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],b[2]))
-         threads.append(t)
-         t.start()
-      
-      while threading.activeCount() > 1:
-         pass
-      else:
-         f.close()
-      
-   except (KeyboardInterrupt, SystemExit):
-      logging.warning('Received keyboard interrupt, quitting threads.')
+   broker_list.close()
+   threads = []
+   for i in range (len(brokers)):
+      b=brokers[i].split(',')
+      print b[0],b[1],b[2]
+      t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],b[2]))
+      threads.append(t)
+      t.start()
    
-   '''
-   client = mqtt.Client(clientId) 
+   while threading.activeCount() > 1:
+      pass
+   else:
+      f.close()
    
-   client.on_connect = on_connect
-   client.on_message = on_message
-   client.on_subscribe = on_subscribe
-   client.on_unsubscribe = on_unsubscribe
-   client.on_disconnect = on_disconnect
-   
-   if enableLogMsg:
-      client.on_log = on_log
-   
-   logging.info(get_timeStr() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT + "\n")
-   f.close()
-   client.connect( BROKER_ADDRESS, int(PORT))
-   
-   client.loop_forever()
-'''
