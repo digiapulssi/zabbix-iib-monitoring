@@ -59,12 +59,12 @@ def ConfigSectionMap(section):
 def on_message(client, userdata, message):
 
    if printMsg:
-      logging.info("Message Recieved: " + str(message.payload.decode("utf-8")))
-      logging.info("Message topic=" + message.topic)
-      logging.info("Message qos=" + str(message.qos))
-      logging.info("Message retain flag=" + str(message.retain))
+      logging.info(threading.currentThread().getName() + " Message Recieved: " + str(message.payload.decode("utf-8")))
+      logging.info(threading.currentThread().getName() + " Message topic=" + message.topic)
+      logging.info(threading.currentThread().getName() + " Message qos=" + str(message.qos))
+      logging.info(threading.currentThread().getName() + " Message retain flag=" + str(message.retain))
    else:
-      logging.info("Message from topic: " + message.topic)
+      logging.info(threading.currentThread().getName() + " Message from topic: " + message.topic)
    
    pattern = "(IBM/IntegrationBus/(\w+)/Status/ExecutionGroup/(\w+))|(IBM/IntegrationBus/(\w+)/Status)"
    match = re.match(pattern, message.topic)
@@ -79,20 +79,20 @@ def on_message(client, userdata, message):
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
             f.write(json.dumps(obj))
-            logging.info("Write Complete")
+            logging.info(threading.currentThread().getName() + " Write Complete")
             
          except ValueError: 
-            logging.error("Error while reading JSON")
+            logging.error(threading.currentThread().getName() + " Error while reading JSON")
       
       else:
          try:
             jsonObj = {}
             jsonObj[message.topic] = str(message.payload.decode("utf-8"))
             f.write(json.dumps(obj))
-            logging.info("Write Complete\n")
+            logging.info(threading.currentThread().getName() + " Write Complete\n")
                
          except ValueError: 
-            logging.error("Error while writing to JSON file")
+            logging.error(threading.currentThread().getName() + " Error while writing to JSON file")
    else:
       parsedJSON = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
@@ -104,10 +104,10 @@ def on_message(client, userdata, message):
          obj[str(message.topic)] = parsedJSON
          
          f.write(json.dumps(obj))
-         logging.info("Write Complete")
+         logging.info(threading.currentThread().getName() + " Write Complete")
          
       except ValueError: 
-         logging.error("Error while reading JSON")
+         logging.error(threading.currentThread().getName() + " Error while reading JSON")
 
 def on_connect(client, userdata, flags, rc):
    conn_codes = [
@@ -119,24 +119,24 @@ def on_connect(client, userdata, flags, rc):
       "Connection refused - not authorised"
    ]
    
-   logging.info(conn_codes[rc] + ". (code " + str(rc) + ")")
+   logging.info(threading.currentThread().getName() + " " + conn_codes[rc] + ". (code " + str(rc) + ")")
    client.subscribe(TOPICS)
 
 def on_subscribe(client, userdata, mid, granted_qos):
-   logging.info("Successfuly subscribed to topic(s)")
+   logging.info(threading.currentThread().getName() + " Successfuly subscribed to topic(s)")
 
 def on_unsubscribe(client, userdata, mid):
-   logging.info("Unsubscribed from topic")
+   logging.info(threading.currentThread().getName() + " Unsubscribed from topic")
 
 def on_disconnect(client, userdata, rc):
 
    if rc != 0:
-      logging.warning("Unexpected disconnection.")
+      logging.warning(threading.currentThread().getName() + " Unexpected disconnection.")
    else:
-      logging.info("Disconnected")
+      logging.info(threading.currentThread().getName() + " Disconnected")
 
 def on_log(client, userdata, level, buf):
-   logging.info("Log message: " + str(client) + " " + str(userdata) + " " + str(buf))
+   logging.info(threading.currentThread().getName() + " Log message: " + str(client) + " " + str(userdata) + " " + str(buf))
 
 def get_timeStr():
    datetimeFormat = ConfigSectionMap("CONFIG")['datetimeformat']
