@@ -72,6 +72,25 @@ def on_message(client, userdata, message):
    obj = {}
    if match == None:
       if os.path.isfile(jsonFile):
+         '''
+         try:
+            with open(jsonFileName, 'r') as jsonFile:
+               obj = json.load(jsonFile)
+               
+            obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
+                  
+            with open(jsonFileName, 'w') as outfile:
+               json.dump(obj, outfile)
+               f=open(logFileName, "a+")
+               f.write(get_timeStr() + " Write Complete\n")
+               f.close()
+            
+         except ValueError: 
+            f=open(logFileName, "a+")
+            f.write(get_timeStr() + " Error while reading JSON\n")
+f.close()
+         '''
+         
          try:
             obj = json.load(dataFile)
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
@@ -173,7 +192,7 @@ if __name__ == "__main__":
    if not os.path.isfile(jsonFile):
       tmp=open(jsonFile,"w+")
       tmp.write(json.dumps("{}"))
-      
+   
    dataFile = open(jsonFile, "r+")
    logging.basicConfig(filename=logFile, filemode='a', level=logging.DEBUG, format='%(asctime)s  %(levelname)s: %(message)s')
    
