@@ -73,12 +73,10 @@ def on_message(client, userdata, message):
    if match == None:
       if os.path.isfile(jsonFile):
          try:
-            jsonStr = f.read()
-            obj = json.loads(jsonStr)
-               
+            obj = json.load(dataFile)
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
-            f.write(json.dumps(obj))
+            dataFile.write(json.dumps(obj))
             logging.info(threading.currentThread().getName() + " Write Complete")
             
          except ValueError: 
@@ -88,8 +86,8 @@ def on_message(client, userdata, message):
          try:
             jsonObj = {}
             jsonObj[message.topic] = str(message.payload.decode("utf-8"))
-            f.write(json.dumps(obj))
-            logging.info(threading.currentThread().getName() + " Write Complete\n")
+            dataFile.write(json.dumps(obj))
+            logging.info(threading.currentThread().getName() + " Write Complete")
                
          except ValueError: 
             logging.error(threading.currentThread().getName() + " ValueError: Error while writing to JSON file")
@@ -98,12 +96,11 @@ def on_message(client, userdata, message):
       
       try:
          if os.path.isfile(jsonFile):
-            jsonStr = f.read()
-            obj = json.loads(jsonStr)
+            obj = json.load(dataFile)
                
          obj[str(message.topic)] = parsedJSON
          
-         f.write(json.dumps(obj))
+         dataFile.write(json.dumps(obj))
          logging.info(threading.currentThread().getName() + " Write Complete")
          
       except ValueError: 
@@ -157,7 +154,7 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id):
       if enableLogMsg:
          client.on_log = on_log
       
-      logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT + " with id: " + id + "\n")
+      logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT + " with id: " + id)
       client.connect( BROKER_ADDRESS, int(PORT))
       
       client.loop_forever()
@@ -173,8 +170,8 @@ if __name__ == "__main__":
    printMsg = config.getboolean("CONFIG", "printmsg")
    brokers_file = ConfigSectionMap("CONFIG")['brokers']
       
-   f=open(jsonFile, "w+")
-   logging.basicConfig(filename=logFile, filemode='a', level=logging.DEBUG,format='%(asctime)s  %(levelname)s: %(message)s')
+   dataFile = open(jsonFile, "r+")
+   logging.basicConfig(filename=logFile, filemode='a', level=logging.DEBUG, format='%(asctime)s  %(levelname)s: %(message)s')
    
    broker_list=open(brokers_file, 'r')
    brokers = broker_list.readlines()
@@ -182,7 +179,7 @@ if __name__ == "__main__":
    threads = []
    for i in range (len(brokers)):
       b=brokers[i].split(',')
-      print b[0],b[1],b[2]
+      
       t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],b[2]))
       threads.append(t)
       t.start()
@@ -190,5 +187,5 @@ if __name__ == "__main__":
    while threading.activeCount() > 1:
       pass
    else:
-      f.close()
+      dataFile.close()
    
