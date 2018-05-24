@@ -176,7 +176,7 @@ if __name__ == "__main__":
    brokers_file = ConfigSectionMap("CONFIG")['brokers']
       
    f=open(jsonFile, "w+")
-   logging.basicConfig(filename=logFile, filemode='a',format='%(asctime)s  %(levelname)s: %(message)s')
+   logging.basicConfig(filename=logFile, filemode='a', level=logging.DEBUG,format='%(asctime)s  %(levelname)s: %(message)s')
    
    broker_list=open(brokers_file, 'r')
    brokers = broker_list.readlines()
