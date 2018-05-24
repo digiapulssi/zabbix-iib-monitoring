@@ -71,7 +71,6 @@ def on_message(client, userdata, message):
    
    obj = {}
    if match == None:
-      logging.info("os.path.isfile(jsonFile): " + str(os.path.isfile(jsonFile)) + " f.readlines() " + str(len(f.readlines())))
       if os.path.isfile(jsonFile) and len(f.readlines()) > 0:
          try:
             jsonStr = f.read()
@@ -98,7 +97,6 @@ def on_message(client, userdata, message):
       parsedJSON = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
       try:
-         logging.info("os.path.isfile(jsonFile): " + str(os.path.isfile(jsonFile)))
          if os.path.isfile(jsonFile):
             jsonStr = f.read()
             obj = json.loads(jsonStr)
@@ -133,7 +131,7 @@ def on_unsubscribe(client, userdata, mid):
 def on_disconnect(client, userdata, rc):
 
    if rc != 0:
-      logging.error("Unexpected disconnection.")
+      logging.warning("Unexpected disconnection.")
    else:
       logging.info("Disconnected")
 
