@@ -91,15 +91,15 @@ def on_message(client, userdata, message):
 f.close()
          '''
          
-         try:
+         #try:
             obj = json.load(dataFile)
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
             dataFile.write(json.dumps(obj))
             logging.info(threading.currentThread().getName() + " Write Complete")
             
-         except ValueError: 
-            logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
+         #except ValueError: 
+            #logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
       
       else:
          try:
