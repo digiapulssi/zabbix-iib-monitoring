@@ -195,6 +195,7 @@ if __name__ == "__main__":
    threads = []
    for i in range (len(brokers)):
       b=brokers[i].split(',')
+      print b[0],b[1],b[2]
       t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],b[2]))
       threads.append(t)
       t.start()
