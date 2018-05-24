@@ -175,7 +175,7 @@ if __name__ == "__main__":
    enableLogMsg = config.getboolean("CONFIG", "enablelogmsg")
    printMsg = config.getboolean("CONFIG", "printmsg")
    
-   brokers = ConfigSectionMap("CONFIG")['brokers']
+   brokers_file = ConfigSectionMap("CONFIG")['brokers']
    
    #BROKER_ADDRESS = ConfigSectionMap("CONFIG")['ip']
    #PORT = ConfigSectionMap("CONFIG")['port']
@@ -185,11 +185,11 @@ if __name__ == "__main__":
    
    f=open(jsonFile, "r+")
    logging.basicConfig(filename=logFile, filemode='a',format='%(asctime)s  %(levelname)s: %(message)s')
-   broker_list=open(brokers, 'r')
+   broker_list=open(brokers_file, 'r')
    brokers = broker_list.readlines()
    
    threads = []
-   for i in range (len(open(brokers).readlines())):
+   for i in range (len(broker_list.readlines())):
       b=brokers[i].split(',')
       t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],b[2]))
       threads.append(t)
