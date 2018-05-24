@@ -7,6 +7,7 @@ import re
 from xmljson import abdera as ab
 from xml.etree.ElementTree import fromstring
 import ConfigParser
+import threading
 import logging
 
 ##### CONFIG #####
@@ -169,12 +170,12 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id):
 
 if __name__ == "__main__":
    logFile = ConfigSectionMap("CONFIG")['logfile']
-   jsonFile = ConfigSectionMap("CONFIG")['jsonFile']
+   jsonFile = ConfigSectionMap("CONFIG")['jsonfile']
    
    enableLogMsg = config.getboolean("CONFIG", "enablelogmsg")
    printMsg = config.getboolean("CONFIG", "printmsg")
    
-   broker_list = ConfigSectionMap("CONFIG")['brokers']
+   brokers = ConfigSectionMap("CONFIG")['brokers']
    
    #BROKER_ADDRESS = ConfigSectionMap("CONFIG")['ip']
    #PORT = ConfigSectionMap("CONFIG")['port']
@@ -184,11 +185,12 @@ if __name__ == "__main__":
    
    f=open(jsonFile, "r+")
    logging.basicConfig(filename=logFile, filemode='a',format='%(asctime)s  %(levelname)s: %(message)s')
-   brokers=f.readlines()
+   broker_list=open(brokers, 'r')
+   brokers = broker_list.readfiles()
    
    threads = []
-   for i in range (len(open(broker_list).readlines())):
-      b=brokers[i].split(",")
+   for i in range (len(open(brokers).readlines())):
+      b=brokers[i].split(',')
       t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],b[2]))
       threads.append(t)
       t.start()
