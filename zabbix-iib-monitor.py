@@ -71,8 +71,8 @@ def on_message(client, userdata, message):
    
    obj = {}
    if match == None:
-      logging.info("os.path.isfile(jsonFile): " + str(os.path.isfile(jsonFile)) + " f.readlines() " + str(f.readlines()))
-      if os.path.isfile(jsonFile) and f.readlines() > 0:
+      logging.info("os.path.isfile(jsonFile): " + str(os.path.isfile(jsonFile)) + " f.readlines() " + str(len(f.readlines())))
+      if os.path.isfile(jsonFile) and len(f.readlines()) > 0:
          try:
             jsonStr = f.read()
             obj = json.loads(jsonStr)
