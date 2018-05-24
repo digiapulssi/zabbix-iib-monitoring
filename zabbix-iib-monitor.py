@@ -170,7 +170,7 @@ if __name__ == "__main__":
    printMsg = config.getboolean("CONFIG", "printmsg")
    brokers_file = ConfigSectionMap("CONFIG")['brokers']
    
-   if !(os.path.isfile(jsonFile)):
+   if not os.path.isfile(jsonFile):
       tmp=open(jsonFile,"w+")
       tmp.write(json.dumps("{}"))
       
