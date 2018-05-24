@@ -71,7 +71,7 @@ def on_message(client, userdata, message):
    
    obj = {}
    if match == None:
-      if os.path.isfile(jsonFile) and len(f.readlines()) > 0:
+      if os.path.isfile(jsonFile) and:
          try:
             jsonStr = f.read()
             obj = json.loads(jsonStr)
@@ -82,7 +82,7 @@ def on_message(client, userdata, message):
             logging.info(threading.currentThread().getName() + " Write Complete")
             
          except ValueError: 
-            logging.error(threading.currentThread().getName() + " Error while reading JSON")
+            logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
       
       else:
          try:
@@ -92,7 +92,7 @@ def on_message(client, userdata, message):
             logging.info(threading.currentThread().getName() + " Write Complete\n")
                
          except ValueError: 
-            logging.error(threading.currentThread().getName() + " Error while writing to JSON file")
+            logging.error(threading.currentThread().getName() + " ValueError: Error while writing to JSON file")
    else:
       parsedJSON = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
@@ -107,7 +107,7 @@ def on_message(client, userdata, message):
          logging.info(threading.currentThread().getName() + " Write Complete")
          
       except ValueError: 
-         logging.error(threading.currentThread().getName() + " Error while reading JSON")
+         logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
 
 def on_connect(client, userdata, flags, rc):
    conn_codes = [
@@ -166,11 +166,11 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id):
 
 if __name__ == "__main__":
    logFile = ConfigSectionMap("CONFIG")['logfile']
-   jsonFile = ConfigSectionMap("CONFIG")['jsonfile']
-   
    enableLogMsg = config.getboolean("CONFIG", "enablelogmsg")
-   printMsg = config.getboolean("CONFIG", "printmsg")
+   loglvl = ConfigSectionMap("CONFIG")['loglevel']
    
+   jsonFile = ConfigSectionMap("CONFIG")['jsonfile']
+   printMsg = config.getboolean("CONFIG", "printmsg")
    brokers_file = ConfigSectionMap("CONFIG")['brokers']
       
    f=open(jsonFile, "w+")
