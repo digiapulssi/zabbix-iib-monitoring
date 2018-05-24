@@ -182,8 +182,8 @@ if __name__ == "__main__":
    #clientId = ConfigSectionMap("CONFIG")['clientid']
    
    #filename = os.path.splitext(__file__)[0]
-   
-   f=open(jsonFile, "r+")
+      
+   f=open(jsonFile, "w+")
    logging.basicConfig(filename=logFile, filemode='a',format='%(asctime)s  %(levelname)s: %(message)s')
    
    broker_list=open(brokers_file, 'r')
