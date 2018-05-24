@@ -185,11 +185,12 @@ if __name__ == "__main__":
    
    f=open(jsonFile, "r+")
    logging.basicConfig(filename=logFile, filemode='a',format='%(asctime)s  %(levelname)s: %(message)s')
+   
    broker_list=open(brokers_file, 'r')
    brokers = broker_list.readlines()
    
    threads = []
-   for i in range (len(broker_list.readlines())):
+   for i in range (len(brokers)):
       b=brokers[i].split(',')
       t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],b[2]))
       threads.append(t)
