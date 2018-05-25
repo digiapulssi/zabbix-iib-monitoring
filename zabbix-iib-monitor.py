@@ -70,8 +70,8 @@ def on_message(client, userdata, message):
    match = re.match(pattern, message.topic)
    
    obj = {}
+   # JSON topic
    if match == None:
-      if os.path.isfile(jsonFile):
          '''
          try:
             with open(jsonFileName, 'r') as jsonFile:
@@ -91,30 +91,23 @@ def on_message(client, userdata, message):
 f.close()
          '''
          
-         #try:
-         obj = json.load(dataFile)
-         obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
+      try:
+         if os.stat(dataFile).st_size > 0:
+            obj = json.load(dataFile)
+            
+         obj[message.topic] = str(message.payload.decode("utf-8"))
          
          dataFile.write(json.dumps(obj))
          logging.info(threading.currentThread().getName() + " Write Complete")
             
-         #except ValueError: 
-            #logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
-      
-      else:
-         try:
-            jsonObj = {}
-            jsonObj[message.topic] = str(message.payload.decode("utf-8"))
-            dataFile.write(json.dumps(obj))
-            logging.info(threading.currentThread().getName() + " Write Complete")
-               
-         except ValueError: 
-            logging.error(threading.currentThread().getName() + " ValueError: Error while writing to JSON file")
+      except ValueError: 
+            logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
+   # XML topic
    else:
       parsedJSON = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
       try:
-         if os.path.isfile(jsonFile):
+         if os.stat(dataFile).st_size > 0:
             obj = json.load(dataFile)
                
          obj[str(message.topic)] = parsedJSON
@@ -191,7 +184,7 @@ if __name__ == "__main__":
    
    if not os.path.isfile(jsonFile):
       tmp=open(jsonFile,"w+")
-      tmp.write(json.dumps("{}"))
+   
    
    dataFile = open(jsonFile, "r+")
    logging.basicConfig(filename=logFile, filemode='a', level=logging.DEBUG, format='%(asctime)s  %(levelname)s: %(message)s')
