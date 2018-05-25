@@ -72,25 +72,6 @@ def on_message(client, userdata, message):
    obj = {}
    # JSON topic
    if match == None:
-         '''
-         try:
-            with open(jsonFileName, 'r') as jsonFile:
-               obj = json.load(jsonFile)
-               
-            obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
-                  
-            with open(jsonFileName, 'w') as outfile:
-               json.dump(obj, outfile)
-               f=open(logFileName, "a+")
-               f.write(get_timeStr() + " Write Complete\n")
-               f.close()
-            
-         except ValueError: 
-            f=open(logFileName, "a+")
-            f.write(get_timeStr() + " Error while reading JSON\n")
-f.close()
-         '''
-         
       try:
          if os.stat(dataFile).st_size > 0:
             obj = json.load(dataFile)
@@ -102,6 +83,7 @@ f.close()
             
       except ValueError: 
             logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
+   
    # XML topic
    else:
       parsedJSON = ab.data(fromstring(str(message.payload.decode("utf-8"))))
