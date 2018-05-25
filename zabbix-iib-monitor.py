@@ -73,13 +73,13 @@ def on_message(client, userdata, message):
    # JSON topic
    if match == None:
       # try:
-         if os.stat(jsonFile).st_size > 0:
-            obj = json.loads(jsonFile)
-            
-         obj[message.topic] = str(message.payload.decode("utf-8"))
+      if os.stat(jsonFile).st_size > 0:
+         obj = json.loads(jsonFile)
          
-         dataFile.write(json.dumps(obj))
-         logging.info(threading.currentThread().getName() + " Write Complete")
+      obj[message.topic] = str(message.payload.decode("utf-8"))
+      
+      dataFile.write(json.dumps(obj))
+      logging.info(threading.currentThread().getName() + " Write Complete")
             
       # except ValueError: 
             # logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
@@ -89,13 +89,13 @@ def on_message(client, userdata, message):
       parsedJSON = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
       # try:
-         if os.stat(jsonFile).st_size > 0:
-            obj = json.loads(jsonFile)
-               
-         obj[str(message.topic)] = parsedJSON
-         
-         dataFile.write(json.dumps(obj))
-         logging.info(threading.currentThread().getName() + " Write Complete")
+      if os.stat(jsonFile).st_size > 0:
+         obj = json.loads(jsonFile)
+            
+      obj[str(message.topic)] = parsedJSON
+      
+      dataFile.write(json.dumps(obj))
+      logging.info(threading.currentThread().getName() + " Write Complete")
          
       # except ValueError: 
          # logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
