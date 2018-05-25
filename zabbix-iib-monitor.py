@@ -72,7 +72,7 @@ def on_message(client, userdata, message):
    obj = {}
    # JSON topic
    if match == None:
-      try:
+      # try:
          if os.stat(jsonFile).st_size > 0:
             obj = json.loads(jsonFile)
             
@@ -81,14 +81,14 @@ def on_message(client, userdata, message):
          dataFile.write(json.dumps(obj))
          logging.info(threading.currentThread().getName() + " Write Complete")
             
-      except ValueError: 
-            logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
+      # except ValueError: 
+            # logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
    
    # XML topic
    else:
       parsedJSON = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
-      try:
+      # try:
          if os.stat(jsonFile).st_size > 0:
             obj = json.loads(jsonFile)
                
@@ -97,8 +97,8 @@ def on_message(client, userdata, message):
          dataFile.write(json.dumps(obj))
          logging.info(threading.currentThread().getName() + " Write Complete")
          
-      except ValueError: 
-         logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
+      # except ValueError: 
+         # logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
 
 def on_connect(client, userdata, flags, rc):
    conn_codes = [
