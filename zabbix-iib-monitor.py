@@ -73,8 +73,8 @@ def on_message(client, userdata, message):
    # JSON topic
    if match == None:
       try:
-         if os.stat(dataFile).st_size > 0:
-            obj = json.load(dataFile)
+         if os.stat(jsonFile).st_size > 0:
+            obj = json.load(jsonFile)
             
          obj[message.topic] = str(message.payload.decode("utf-8"))
          
@@ -89,8 +89,8 @@ def on_message(client, userdata, message):
       parsedJSON = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
       try:
-         if os.stat(dataFile).st_size > 0:
-            obj = json.load(dataFile)
+         if os.stat(jsonFile).st_size > 0:
+            obj = json.load(jsonFile)
                
          obj[str(message.topic)] = parsedJSON
          
