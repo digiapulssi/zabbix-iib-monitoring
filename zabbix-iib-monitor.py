@@ -74,7 +74,7 @@ def on_message(client, userdata, message):
    if match == None:
       try:
          if os.stat(jsonFile).st_size > 0:
-            obj = json.load(jsonFile)
+            obj = json.loads(jsonFile)
             
          obj[message.topic] = str(message.payload.decode("utf-8"))
          
@@ -90,7 +90,7 @@ def on_message(client, userdata, message):
       
       try:
          if os.stat(jsonFile).st_size > 0:
-            obj = json.load(jsonFile)
+            obj = json.loads(jsonFile)
                
          obj[str(message.topic)] = parsedJSON
          
@@ -166,7 +166,7 @@ if __name__ == "__main__":
    
    if not os.path.isfile(jsonFile):
       tmp=open(jsonFile,"w+")
-   
+      tmp.close()
    
    dataFile = open(jsonFile, "r+")
    logging.basicConfig(filename=logFile, filemode='a', level=logging.DEBUG, format='%(asctime)s  %(levelname)s: %(message)s')
