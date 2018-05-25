@@ -73,12 +73,21 @@ def on_message(client, userdata, message):
    # JSON topic
    if match == None:
       try:
-         if os.stat(jsonFile).st_size > 0:
-            obj = json.loads(jsonFile)
+         with lock:
+            if not os.path.isfile(jsonFile):
+               tmp=open(jsonFile,"w")
+               tmp.close()
+   
+            dataFile = open(jsonFile, "r+")
             
-         obj[message.topic] = str(message.payload.decode("utf-8"))
-         
-         dataFile.write(json.dumps(obj))
+            if os.stat(jsonFile).st_size > 0:
+               obj = json.loads(jsonFile)
+               
+            obj[message.topic] = str(message.payload.decode("utf-8"))
+            
+            dataFile.write(json.dumps(obj))
+            dataFile.close()
+            
          logging.info(threading.currentThread().getName() + " Write Complete")
             
       except ValueError: 
@@ -89,12 +98,21 @@ def on_message(client, userdata, message):
       parsedJSON = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
       try:
-         if os.stat(jsonFile).st_size > 0:
-            obj = json.loads(jsonFile)
-               
-         obj[str(message.topic)] = parsedJSON
-         
-         dataFile.write(json.dumps(obj))
+         with lock:
+            if not os.path.isfile(jsonFile):
+               tmp=open(jsonFile,"w")
+               tmp.close()
+   
+            dataFile = open(jsonFile, "r+")
+            
+            if os.stat(jsonFile).st_size > 0:
+               obj = json.loads(jsonFile)
+                  
+            obj[str(message.topic)] = parsedJSON
+            
+            dataFile.write(json.dumps(obj))
+            dataFile.close()
+            
          logging.info(threading.currentThread().getName() + " Write Complete")
          
       except ValueError: 
@@ -164,16 +182,13 @@ if __name__ == "__main__":
    printMsg = config.getboolean("CONFIG", "printmsg")
    brokers_file = ConfigSectionMap("CONFIG")['brokers']
    
-   if not os.path.isfile(jsonFile):
-      tmp=open(jsonFile,"w+")
-      tmp.close()
-   
-   dataFile = open(jsonFile, "r+")
    logging.basicConfig(filename=logFile, filemode='a', level=logging.DEBUG, format='%(asctime)s  %(levelname)s: %(message)s')
    
    broker_list=open(brokers_file, 'r')
    brokers = broker_list.readlines()
    broker_list.close()
+   
+   lock = threading.lock()
    threads = []
    for i in range (len(brokers)):
       b=brokers[i].split(',')
