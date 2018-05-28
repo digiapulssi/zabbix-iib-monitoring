@@ -75,12 +75,11 @@ def on_message(client, userdata, message):
    if match == None:
       try:
          with lock:
-            print (threading.currentThread().getName() + "   " + str(message.payload.decode("utf-8"))
-            
             if not os.path.isfile(jsonFile):
                tmp=open(jsonFile,"w")
                tmp.close()
    
+            print (threading.currentThread().getName() + "   " + str(message.payload.decode("utf-8"))
             dataFile = open(jsonFile, "r")
             
             if os.stat(jsonFile).st_size > 0:
