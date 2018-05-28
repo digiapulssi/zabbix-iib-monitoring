@@ -80,10 +80,10 @@ def on_message(client, userdata, message):
             elif os.stat(jsonFile).st_size > 0:
                with open(jsonFile) as f:
                   obj = json.load(f)
-            obj[str(message.topic)] = message.payload.decode("utf-8")
+            obj[str(message.topic)] = json.dumps(message.payload.decode("utf-8"))
             
             with open(jsonFile, 'w') as outfile:
-               outfile.write(json.dumps(str(obj)))
+               outfile.write(obj)
             
          logging.info(threading.currentThread().getName() + " Write Complete")
             
@@ -106,7 +106,7 @@ def on_message(client, userdata, message):
             obj[str(message.topic)] = parsedJSON
             
             with open(jsonFile, 'w') as outfile:
-               outfile.write(json.dumps(str(obj)))
+               outfile.write(str(obj))
             
          logging.info(threading.currentThread().getName() + " Write Complete")
          
@@ -149,24 +149,21 @@ def get_timeStr():
    return timeStr
    
 def thread_MQTT(BROKER_ADDRESS,PORT,id):
-   try:
-      client = mqtt.Client(id) 
-      
-      client.on_connect = on_connect
-      client.on_message = on_message
-      client.on_subscribe = on_subscribe
-      client.on_unsubscribe = on_unsubscribe
-      client.on_disconnect = on_disconnect
-      
-      if enableLogMsg:
-         client.on_log = on_log
-      
-      logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT + " with id: " + id)
-      client.connect( BROKER_ADDRESS, int(PORT))
-      
-      client.loop_forever()
-   except (KeyboardInterrupt, SystemExit):
-      logging.warning('Received keyboard interrupt, quitting threads.')
+   client = mqtt.Client(id) 
+   
+   client.on_connect = on_connect
+   client.on_message = on_message
+   client.on_subscribe = on_subscribe
+   client.on_unsubscribe = on_unsubscribe
+   client.on_disconnect = on_disconnect
+   
+   if enableLogMsg:
+      client.on_log = on_log
+   
+   logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT + " with id: " + id)
+   client.connect( BROKER_ADDRESS, int(PORT))
+   
+   client.loop_forever()
 
 if __name__ == "__main__":
    logFile = ConfigSectionMap("CONFIG")['logfile']
