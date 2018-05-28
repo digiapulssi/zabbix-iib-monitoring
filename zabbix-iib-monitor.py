@@ -84,8 +84,8 @@ def on_message(client, userdata, message):
             if os.stat(jsonFile).st_size > 0:
                obj = json.loads(jsonFile)
                
-            obj[str(message.topic)] = json.dumps(str(message.payload.decode("utf-8")))
-            
+            obj[str(message.topic)] = str(message.payload.decode("utf-8")))
+            print str(obj)
             dataFile.write(json.dumps(obj))
             dataFile.close()
             
