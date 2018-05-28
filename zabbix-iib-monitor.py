@@ -83,7 +83,7 @@ def on_message(client, userdata, message):
             obj[str(message.topic)] = message.payload.decode("utf-8")
             
             with open(jsonFile, 'w') as outfile:
-               outfile.write(str(obj))
+               outfile.write(json.dumps(str(obj)))
             
          logging.info(threading.currentThread().getName() + " Write Complete")
             
@@ -106,7 +106,7 @@ def on_message(client, userdata, message):
             obj[str(message.topic)] = parsedJSON
             
             with open(jsonFile, 'w') as outfile:
-               outfile.write(obj)
+               outfile.write(json.dumps(str(obj)))
             
          logging.info(threading.currentThread().getName() + " Write Complete")
          
