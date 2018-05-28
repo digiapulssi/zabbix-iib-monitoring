@@ -81,7 +81,7 @@ def on_message(client, userdata, message):
                with open(jsonFile) as f:
                   obj = json.load(f)
             
-            obj[str(message.topic)] = str(message.payload.decode("utf-8"))
+            obj[str(message.topic)] = message.payload.decode("utf-8")
             
             dataFile = open(jsonFile, "w")
             dataFile.write(json.dumps(obj))
