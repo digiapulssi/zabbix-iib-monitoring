@@ -78,7 +78,7 @@ def on_message(client, userdata, message):
                tmp=open(jsonFile,"w")
                tmp.close()
    
-            dataFile = open(jsonFile, "r+")
+            dataFile = open(jsonFile, "r") # pelkkä "r" ???
             
             if os.stat(jsonFile).st_size > 0:
                obj = json.loads(jsonFile)
