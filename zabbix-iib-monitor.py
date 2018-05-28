@@ -106,7 +106,7 @@ def on_message(client, userdata, message):
             obj[str(message.topic)] = parsedJSON
             
             with open(jsonFile, 'w') as outfile:
-               outfile.write(str(obj))
+               outfile.write(obj)
             
          logging.info(threading.currentThread().getName() + " Write Complete")
          
