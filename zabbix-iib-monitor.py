@@ -78,8 +78,8 @@ def on_message(client, userdata, message):
                tmp=open(jsonFile,"w")
                tmp.close()
             elif os.stat(jsonFile).st_size > 0:
-               dataFile = open(jsonFile, "r")
-               obj = json.loads(jsonFile)
+               with open(jsonFile) as f:
+                  obj = json.load(f)
             
             obj[str(message.topic)] = str(message.payload.decode("utf-8"))
             
@@ -102,8 +102,8 @@ def on_message(client, userdata, message):
                tmp=open(jsonFile,"w")
                tmp.close()
             elif os.stat(jsonFile).st_size > 0:
-               dataFile = open(jsonFile, "r")
-               obj = json.loads(jsonFile)
+               with open(jsonFile) as f:
+                  obj = json.load(f)
                   
             obj[str(message.topic)] = parsedJSON
             
