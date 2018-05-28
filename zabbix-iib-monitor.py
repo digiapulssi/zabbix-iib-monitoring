@@ -178,6 +178,7 @@ if __name__ == "__main__":
    brokers_file = ConfigSectionMap("CONFIG")['brokers']
    
    logging.basicConfig(filename=logFile, filemode='a', level=logging.DEBUG, format='%(asctime)s  %(levelname)s: %(message)s')
+   logging.info(" --- Starting ---")
    
    broker_list=open(brokers_file, 'r')
    brokers = broker_list.readlines()
@@ -195,5 +196,5 @@ if __name__ == "__main__":
    while threading.activeCount() > 1:
       pass
    else:
-      tmp.close()
+      logging.info(" --- Exiting ---")
    
