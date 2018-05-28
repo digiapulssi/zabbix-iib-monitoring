@@ -188,7 +188,7 @@ if __name__ == "__main__":
    brokers = broker_list.readlines()
    broker_list.close()
    
-   lock = threading.lock()
+   lock = threading.Lock()
    threads = []
    for i in range (len(brokers)):
       b=brokers[i].split(',')
