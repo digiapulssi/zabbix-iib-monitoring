@@ -80,7 +80,8 @@ def on_message(client, userdata, message):
             elif os.stat(jsonFile).st_size > 0:
                with open(jsonFile) as f:
                   obj = json.load(f)
-            
+            print message.payload.decode("utf-8")
+            print json.dumps(message.payload.decode("utf-8"))
             obj[str(message.topic)] = message.payload.decode("utf-8")
             
             dataFile = open(jsonFile, "w")
