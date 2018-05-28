@@ -79,7 +79,7 @@ def on_message(client, userdata, message):
                tmp=open(jsonFile,"w")
                tmp.close()
    
-            print (threading.currentThread().getName() + "   " + str(message.payload.decode("utf-8"))
+            print (threading.currentThread().getName() + "   " + str(message.payload.decode("utf-8")))
             dataFile = open(jsonFile, "r")
             
             if os.stat(jsonFile).st_size > 0:
