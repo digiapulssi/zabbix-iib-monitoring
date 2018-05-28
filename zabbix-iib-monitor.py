@@ -77,14 +77,13 @@ def on_message(client, userdata, message):
             if not os.path.isfile(jsonFile):
                tmp=open(jsonFile,"w")
                tmp.close()
-   
-            dataFile = open(jsonFile, "r")
-            
-            if os.stat(jsonFile).st_size > 0:
+            elif os.stat(jsonFile).st_size > 0:
+               dataFile = open(jsonFile, "r")
                obj = json.loads(jsonFile)
-               
+            
             obj[str(message.topic)] = str(message.payload.decode("utf-8"))
-            print str(obj)
+            
+            dataFile = open(jsonFile, "w")
             dataFile.write(json.dumps(obj))
             dataFile.close()
             
@@ -102,14 +101,13 @@ def on_message(client, userdata, message):
             if not os.path.isfile(jsonFile):
                tmp=open(jsonFile,"w")
                tmp.close()
-   
-            dataFile = open(jsonFile, "r+")
-            
-            if os.stat(jsonFile).st_size > 0:
+            elif os.stat(jsonFile).st_size > 0:
+               dataFile = open(jsonFile, "r")
                obj = json.loads(jsonFile)
                   
             obj[str(message.topic)] = parsedJSON
             
+            dataFile = open(jsonFile, "w")
             dataFile.write(json.dumps(obj))
             dataFile.close()
             
@@ -201,4 +199,5 @@ if __name__ == "__main__":
       pass
    else:
       dataFile.close()
+      tmp.close()
    
