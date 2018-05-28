@@ -65,7 +65,6 @@ def on_message(client, userdata, message):
       logging.info(threading.currentThread().getName() + " Message retain flag=" + str(message.retain))
    else:
       logging.info(threading.currentThread().getName() + " Message from topic: " + message.topic)
-      print threading.currentThread().getName() + " Message from topic: " + message.topic
    
    pattern = "(IBM/IntegrationBus/(\w+)/Status/ExecutionGroup/(\w+))|(IBM/IntegrationBus/(\w+)/Status)"
    match = re.match(pattern, message.topic)
@@ -84,7 +83,7 @@ def on_message(client, userdata, message):
             if os.stat(jsonFile).st_size > 0:
                obj = json.loads(jsonFile)
                
-            obj[str(message.topic)] = str(message.payload.decode("utf-8")))
+            obj[str(message.topic)] = str(message.payload.decode("utf-8"))
             print str(obj)
             dataFile.write(json.dumps(obj))
             dataFile.close()
