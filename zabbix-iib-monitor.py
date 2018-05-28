@@ -65,6 +65,7 @@ def on_message(client, userdata, message):
       logging.info(threading.currentThread().getName() + " Message retain flag=" + str(message.retain))
    else:
       logging.info(threading.currentThread().getName() + " Message from topic: " + message.topic)
+      print threading.currentThread().getName() + " Message from topic: " + message.topic
    
    pattern = "(IBM/IntegrationBus/(\w+)/Status/ExecutionGroup/(\w+))|(IBM/IntegrationBus/(\w+)/Status)"
    match = re.match(pattern, message.topic)
@@ -74,6 +75,7 @@ def on_message(client, userdata, message):
    if match == None:
       try:
          with lock:
+            print threading.currentThread().getName() + "   " + str(message.payload.decode("utf-8")
             if not os.path.isfile(jsonFile):
                tmp=open(jsonFile,"w")
                tmp.close()
