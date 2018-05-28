@@ -82,9 +82,8 @@ def on_message(client, userdata, message):
                   obj = json.load(f)
             obj[str(message.topic)] = message.payload.decode("utf-8")
             
-            dataFile = open(jsonFile, "w")
-            dataFile.write(str(obj))
-            dataFile.close()
+            with open(jsonFile, 'w') as outfile:
+               json.dump(obj, outfile)
             
          logging.info(threading.currentThread().getName() + " Write Complete")
             
@@ -106,9 +105,8 @@ def on_message(client, userdata, message):
                   
             obj[str(message.topic)] = parsedJSON
             
-            dataFile = open(jsonFile, "w")
-            dataFile.write(json.dumps(obj))
-            dataFile.close()
+            with open(jsonFile, 'w') as outfile:
+               json.dump(obj, outfile)
             
          logging.info(threading.currentThread().getName() + " Write Complete")
          
@@ -197,6 +195,5 @@ if __name__ == "__main__":
    while threading.activeCount() > 1:
       pass
    else:
-      dataFile.close()
       tmp.close()
    
