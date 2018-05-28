@@ -79,7 +79,6 @@ def on_message(client, userdata, message):
                tmp=open(jsonFile,"w")
                tmp.close()
    
-            print (threading.currentThread().getName() + "   " + str(message.payload.decode("utf-8")))
             dataFile = open(jsonFile, "r")
             
             if os.stat(jsonFile).st_size > 0:
@@ -93,7 +92,7 @@ def on_message(client, userdata, message):
          logging.info(threading.currentThread().getName() + " Write Complete")
             
       except ValueError: 
-            logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
+            logging.error(threading.currentThread().getName() + " JSON topic ValueError: Error while reading JSON")
    
    # XML topic
    else:
@@ -118,7 +117,7 @@ def on_message(client, userdata, message):
          logging.info(threading.currentThread().getName() + " Write Complete")
          
       except ValueError: 
-         logging.error(threading.currentThread().getName() + " ValueError: Error while reading JSON")
+         logging.error(threading.currentThread().getName() + " XML topic ValueError: Error while reading JSON")
 
 def on_connect(client, userdata, flags, rc):
    conn_codes = [
