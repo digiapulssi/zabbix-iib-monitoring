@@ -36,7 +36,8 @@ The virtualenv is now ready, use command ```deactivate``` to exit the virtualenv
 1. Copy the file(s) under [etc/zabbix/scripts](etc/zabbix/scripts) to `/etc/zabbix/scripts`
 2. Copy the file(s) under [etc/zabbix/zabbix_agentd.d](etc/zabbix/zabbix_agentd.d) to `/etc/zabbix/zabbix_agentd.d`
 3. Copy all the other files somewhere easy to find on the agent machine (E.g. user home directory)
-4. Edit zabbix-iib-monitoring.py, on the first row add/replace "#! /\<pathToEnv\>/iib-python-venv/bin/python"
+4. Edit zabbix-iib-monitoring.py, on the first row add:
+```#!/<pathToVirtualenv>/iib-python-venv/bin/python```
 
 ## Usage
 
