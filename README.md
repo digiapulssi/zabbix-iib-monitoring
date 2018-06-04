@@ -34,7 +34,7 @@ Install packages with command:
 1. Copy the files under [etc/zabbix/scripts](etc/zabbix/scripts) to `/etc/zabbix/scripts`
 2. Copy the files under [etc/zabbix/zabbix_agentd.d](etc/zabbix/zabbix_agentd.d) to `/etc/zabbix/zabbix_agentd.d`
 3. Everything else can be copied anywhere on the agent machine.
-4. Edit 
+4. Edit zabbix-iib-monitoring.py, on the first row add/replace "#! /<pathToEnv>/iib-python-venv/bin/python"
 
 ## Usage
 
