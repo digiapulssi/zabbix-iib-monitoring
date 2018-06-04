@@ -26,14 +26,16 @@ This project contains scripts for listening to IBM Integration Bus MQTT messages
 - six
 - paho-mqtt
 
-Install packages with command:
+Install packages with:
 ```pip install xmljson ConfigParser six paho-mqtt```
+
+The virtualenv is now ready, use command ```deactivate``` to exit the virtualenv.
 
 ### Scripts
 
 1. Copy the file(s) under [etc/zabbix/scripts](etc/zabbix/scripts) to `/etc/zabbix/scripts`
 2. Copy the file(s) under [etc/zabbix/zabbix_agentd.d](etc/zabbix/zabbix_agentd.d) to `/etc/zabbix/zabbix_agentd.d`
-3. Everything else can be copied anywhere on the agent machine.
+3. Copy all the other files somewhere easy to find on the agent machine (E.g. user home directory)
 4. Edit zabbix-iib-monitoring.py, on the first row add/replace "#! /\<pathToEnv\>/iib-python-venv/bin/python"
 
 ## Usage
@@ -48,7 +50,6 @@ mqsichangeflowstats yourNodeName -g -j -a -o json -c active
 
 **NOTE: Messageflow data collection is off by default and must be reactivated after (re)deployment!**
 
-
 2. Change data collection interval for integration node with command:
 
 **NOTE: Integration node needs to be shutdown first**
@@ -59,15 +60,15 @@ mqsichangebroker yourNodeName -v 10
 
 ### Scripts & Zabbix
 
-3. Run "zabbix-iib-monitoring.py" (check "zabbix-iib-monitoring.ini" for connection settings) to start recieving monitoring data
+1. Run "zabbix-iib-monitoring.py" (check "zabbix-iib-monitoring.ini" for connection settings) to start recieving monitoring data
 
-4. Add 3 iib.mqtt_topic.discovery to host/template
+2. Add 3 iib.mqtt_topic.discovery to host/template
    - Use key "iib.mqtt_topic.discovery[]" with parameter "node", "server" or "messageflow" (one of each)
    - Set filter ```"{#TOPIC_NODE}" matches "^IBM/IntegrationBus/[A-Za-z0-9]*/Status$"``` for "iib.mqtt_topic.discovery[node]"
    - Set filter ```"{#TOPIC_SERVER}" matches "^IBM/IntegrationBus/[A-Za-z0-9]*/Status/ExecutionGroup/[A-Za-z0-9]*$"``` for "iib.mqtt_topic.discovery[server]"
    - Set filter ```"{#TOPIC_MESSAGEFLOW}" matches "^IBM/IntegrationBus/[A-Za-z0-9]*/Statistics/JSON/Archive"``` for "iib.mqtt_topic.discovery[messageflow]"
-5. Add items to host/template
-   - Use key "iib.messageflow[{TOPIC_MESSAGEFLOW}, *dataFieldName*]" where "*dataFieldName*" is the monitoring data field name (leave empty to see all fields)
-   - Use key "iib.node.status[{TOPIC_NODE}] to get updates on node status
+3. Add items to host/template
+   - Use key "iib.messageflow[{TOPIC_MESSAGEFLOW}, *dataFieldName*]" where "*dataFieldName*" is the json field name (Leave parameter empty and set "Type of information" to "text" to see all available fields)
+   - Use key "iib.node.status[{TOPIC_NODE}]" to get updates on node status
    - Use key "iib.server.status[{TOPIC_SERVER}]" to get updates on server status
 
