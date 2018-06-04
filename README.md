@@ -1,12 +1,37 @@
 # zabbix-iib-monitoring
 
-This project contains scripts for listening to IBM Integration Bus MQTT messages and ready-to-install scripts for Zabbix Agent.
+This project contains scripts for listening to IBM Integration Bus MQTT messages and ready-to-install scripts for Zabbix Agent. These scripts do **not require** to be local with IBM Integration Bus, although you will need to change the bind address of each integration node you want to monitor from the outside. Bind address can be found in file at C:\ProgramData\IBM\MQSI\components\nodeName\config\nodeName
 
 ## Installation
 
+### Python / PIP
+
+1. Install virtualenv with pip
+```pip install virtualenv```
+
+2. Create virtual environment "iib-python-venv" (will create folder "iib-python-venv" in the current directory, delete folder to remove the virtualenv)
+```virtualenv iib-python-venv```
+
+3. Activate virtualenv
+[user@hostname]$```source /<pathToEnv>/iib-python-venv/bin/activate```
+
+"(iib-python-venv)" should appear at the start of the commandline once activated
+
+4. The following packages are required in the virtualenv:
+- xmljson
+- ConfigParser
+- six
+- paho-mqtt
+
+Install with command:
+``` pip install xmljson ConfigParser six paho-mqtt```
+
+
+
 1. Copy the files under [etc/zabbix/scripts](etc/zabbix/scripts) to `/etc/zabbix/scripts`
 2. Copy the files under [etc/zabbix/zabbix_agentd.d](etc/zabbix/zabbix_agentd.d) to `/etc/zabbix/zabbix_agentd.d`
-3. Copy "zabbix-iib-monitoring.py" and "zabbix-iib-monitoring.ini" anywhere on the agent machine. (This script does **not require** to be local with IBM Integration Bus, although you will need to change the bind address of each node you want to connect from the outside. Bind address can be found in file at C:\ProgramData\IBM\MQSI\components\nodeName\config\nodeName)
+3. Everything else can be copied anywhere on the agent machine.
+4. Edit 
 
 ## Usage
 
