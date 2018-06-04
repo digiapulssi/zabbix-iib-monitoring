@@ -7,13 +7,16 @@ This project contains scripts for listening to IBM Integration Bus MQTT messages
 ### Python / PIP
 
 1. Install virtualenv with pip
+
 ```pip install virtualenv```
 
 2. Create virtual environment "iib-python-venv" (will create folder "iib-python-venv" in the current directory, delete folder to remove the virtualenv)
+
 ```virtualenv iib-python-venv```
 
 3. Activate virtualenv
-[user@hostname]$```source /<pathToEnv>/iib-python-venv/bin/activate```
+
+```source /<pathToEnv>/iib-python-venv/bin/activate```
 
 "(iib-python-venv)" should appear at the start of the commandline once activated
 
@@ -23,8 +26,8 @@ This project contains scripts for listening to IBM Integration Bus MQTT messages
 - six
 - paho-mqtt
 
-Install with command:
-``` pip install xmljson ConfigParser six paho-mqtt```
+Install packages with command:
+```pip install xmljson ConfigParser six paho-mqtt```
 
 
 
