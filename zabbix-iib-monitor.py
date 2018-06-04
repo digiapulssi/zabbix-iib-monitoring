@@ -1,3 +1,5 @@
+#!/home/pulssi/iib-python-venv/bin/python
+
 import paho.mqtt.client as mqtt
 import json
 import time
@@ -6,7 +8,7 @@ import xml.etree.ElementTree as ET
 import re
 from xmljson import abdera as ab
 from xml.etree.ElementTree import fromstring
-import ConfigParser
+from six.moves import configparser as ConfigParser
 import threading
 import logging
 
