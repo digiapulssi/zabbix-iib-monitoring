@@ -30,7 +30,7 @@ applicationName= "+"
 messageFlowName = "+"
 
 # Topics that will be subscribed to
-# topic format: ("topic", QoS)
+# format: ("topic", QoS)
 TOPICS= [                           
    ("IBM/IntegrationBus/" + integrationNodeName + "/Status", 0),
    ("IBM/IntegrationBus/" + integrationNodeName + "/Status/ExecutionGroup/" + integrationServerName, 0) ,
