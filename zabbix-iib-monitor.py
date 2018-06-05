@@ -1,10 +1,9 @@
-#!/home/pulssi/iib-python-venv/bin/python
+#!replace this with the virtualenv path
 
 import paho.mqtt.client as mqtt
 import json
 import time
 import os
-import xml.etree.ElementTree as ET
 import re
 from xmljson import abdera as ab
 from xml.etree.ElementTree import fromstring
@@ -68,7 +67,7 @@ def on_message(client, userdata, message):
    else:
       logging.info(threading.currentThread().getName() + " Message from topic: " + message.topic)
    
-   pattern = "(IBM/IntegrationBus/(\w+)/Status/ExecutionGroup/(\w+))|(IBM/IntegrationBus/(\w+)/Status)"
+   pattern = "(IBM/IntegrationBus/(\w+)/Status/ExecutionGroup/(\w+)) | (IBM/IntegrationBus/(\w+)/Status)"
    match = re.match(pattern, message.topic)
    
    obj = {}
