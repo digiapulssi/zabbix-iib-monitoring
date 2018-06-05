@@ -142,12 +142,6 @@ def on_disconnect(client, userdata, rc):
 
 def on_log(client, userdata, level, buf):
    logging.info(threading.currentThread().getName() + " Log message: " + str(client) + " " + str(userdata) + " " + str(buf))
-
-def get_timeStr():
-   datetimeFormat = ConfigSectionMap("CONFIG")['datetimeformat']
-   ts = time.localtime()
-   timeStr = time.strftime(datetimeFormat , ts)
-   return timeStr
    
 def thread_MQTT(BROKER_ADDRESS,PORT,id):
    client = mqtt.Client(id) 
@@ -170,12 +164,13 @@ if __name__ == "__main__":
    logFile = ConfigSectionMap("CONFIG")['logfile']
    enableLogMsg = config.getboolean("CONFIG", "enablelogmsg")
    loglvl = ConfigSectionMap("CONFIG")['loglevel']
+   datetimeFormat = ConfigSectionMap("CONFIG")['datetimeformat']
    
    jsonFile = ConfigSectionMap("CONFIG")['jsonfile']
    printMsg = config.getboolean("CONFIG", "printmsg")
    brokers_file = ConfigSectionMap("CONFIG")['brokers']
    
-   logging.basicConfig(filename=logFile, filemode='a', level=logging.DEBUG, format='%(asctime)s  %(levelname)s: %(message)s')
+   logging.basicConfig(filename=logFile, filemode='a', level=logging.DEBUG, datefmt=datetimeFormat, format='%(asctime)s  %(levelname)s: %(message)s')
    logging.info(" --- Starting ---")
    
    broker_list=open(brokers_file, 'r')
