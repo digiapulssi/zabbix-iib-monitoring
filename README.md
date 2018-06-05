@@ -63,13 +63,14 @@ mqsichangebroker yourNodeName -v 10
 
 1. Run "zabbix-iib-monitoring.py" (check "zabbix-iib-monitoring.ini" for connection settings) to start recieving monitoring data
 
-2. Add 3 iib.mqtt_topic.discovery to host/template
-   - Use key "iib.mqtt_topic.discovery[]" with parameter "node", "server" or "messageflow" (one of each)
-   - Set filter ```"{#TOPIC_NODE}" matches "^IBM/IntegrationBus/[A-Za-z0-9]*/Status$"``` for "iib.mqtt_topic.discovery[node]"
-   - Set filter ```"{#TOPIC_SERVER}" matches "^IBM/IntegrationBus/[A-Za-z0-9]*/Status/ExecutionGroup/[A-Za-z0-9]*$"``` for "iib.mqtt_topic.discovery[server]"
-   - Set filter ```"{#TOPIC_MESSAGEFLOW}" matches "^IBM/IntegrationBus/[A-Za-z0-9]*/Statistics/JSON/Archive"``` for "iib.mqtt_topic.discovery[messageflow]"
-3. Add items to host/template
-   - Use key "iib.messageflow[{TOPIC_MESSAGEFLOW}, *dataFieldName*]" where "*dataFieldName*" is the json field name (Leave parameter empty and set "Type of information" to "text" to see all available fields)
-   - Use key "iib.node.status[{TOPIC_NODE}]" to get updates on node status
-   - Use key "iib.server.status[{TOPIC_SERVER}]" to get updates on server status
+2. Add 3 iib.mqtt_topic.discovery rules
+   - Key "iib.mqtt_topic.discovery[node]"
+   - Key "iib.mqtt_topic.discovery[server]"
+   - Key "iib.mqtt_topic.discovery[messageflow]"
+   
+3. Add prototype items
+   - For rule "iib.mqtt_topic.discovery[node]" use key "iib.node.status[{TOPIC}]" to get updates on node status
+   - For rule "iib.mqtt_topic.discovery[server]" use key "iib.server.status[{TOPIC}]" to get updates on server status
+   - For rule "iib.mqtt_topic.discovery[messageflow]" use key "iib.messageflow[{TOPIC}, *dataFieldName*]" where "*dataFieldName*" is the json field name (Leave parameter empty and set "Type of information" to "text" to see all available fields)
+
 
