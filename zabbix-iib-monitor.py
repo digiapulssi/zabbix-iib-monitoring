@@ -60,8 +60,8 @@ def ConfigSectionMap(section):
 def on_message(client, userdata, message):
 
    if printMsg:
-      logging.info(threading.currentThread().getName() + " Message Recieved: " + str(message.payload.decode("utf-8")))
-      logging.info(threading.currentThread().getName() + " Message topic=" + message.topic)
+      logging.info(threading.currentThread().getName() + " Message from topic: " + message.topic)
+      logging.info(threading.currentThread().getName() + " Message Payload: " + str(message.payload.decode("utf-8")))
       logging.info(threading.currentThread().getName() + " Message qos=" + str(message.qos))
       logging.info(threading.currentThread().getName() + " Message retain flag=" + str(message.retain))
    else:
@@ -71,7 +71,7 @@ def on_message(client, userdata, message):
    match = re.match(pattern, message.topic)
    
    obj = {}
-   copy = {}
+   objCopy = {}
    # JSON topic
    if match == None:
       try:
@@ -83,21 +83,13 @@ def on_message(client, userdata, message):
                with open(jsonFile) as f:
                   obj = json.load(f)
                   
-            copy = obj
+            objCopy = obj
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
-            logging.info(json.dumps(obj))
-            logging.info(json.dumps(copy))
             
-            # incerement values
-            if 'ElapsedTimeWaitingForInputMessageIncremental' not in obj:
-               logging.info(threading.currentThread().getName() + " Field not found")
-               obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'] = obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage']
-            else:
-               logging.info(threading.currentThread().getName() + " Field found")
-               obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'] += copy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage']
+            final = inc_msgflow_data(str(message.topic), obj, objCopy)
             
             with open(jsonFile, 'w') as outfile:
-               json.dump(obj, outfile)
+               json.dump(final, outfile)
             
          logging.info(threading.currentThread().getName() + " Write Complete")
             
@@ -172,6 +164,20 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id):
    client.connect( BROKER_ADDRESS, int(PORT))
    
    client.loop_forever()
+   
+def inc_msgflow_data(mqtt_topic, new, old):
+   newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
+   oldMsgflow = old[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
+   
+   keys = ['ElapsedTimeWaitingForInputMessage']
+   
+   for key in keys:
+      if key not in oldMsgflow:
+         newMsgflow[key + 'Incremental'] = oldMsgflow[key]
+      else:
+         newMsgflow[key + 'Incremental'] += oldMsgflow[key]
+   
+   return new
 
 if __name__ == "__main__":
    logFile = ConfigSectionMap("CONFIG")['logfile']
