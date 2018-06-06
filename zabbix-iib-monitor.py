@@ -85,7 +85,7 @@ def on_message(client, userdata, message):
             
             if 'ElapsedTimeWaitingForInputMessageIncremental' not in obj:
                obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'] = obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage']
-            else 
+            else:
                obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'] += obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage']
             
             with open(jsonFile, 'w') as outfile:
