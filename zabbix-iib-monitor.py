@@ -86,6 +86,7 @@ def on_message(client, userdata, message):
                   logging.info(threading.currentThread().getName() + " Reading JSON file")
                   obj = json.load(f)
                   objCopy = obj
+                  
             # load new data
             logging.info(threading.currentThread().getName() + " Copying new data")
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
