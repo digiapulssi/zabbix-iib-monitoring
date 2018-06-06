@@ -101,27 +101,27 @@ def on_message(client, userdata, message):
             logging.error(threading.currentThread().getName() + " JSON topic ValueError: Error while reading JSON")
    
    # XML topic
-   # else:
-      # parsedJSON = ab.data(fromstring(str(message.payload.decode("utf-8"))))
+   else:
+      parsedjson = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
-      # try:
-         # with lock:
-            # if not os.path.isfile(jsonFile):
-               # tmp=open(jsonFile,"w")
-               # tmp.close()
-            # elif os.stat(jsonFile).st_size > 0:
-               # with open(jsonFile) as f:
-                  # obj = json.load(f)
+      try:
+         with lock:
+            if not os.path.isfile(jsonfile):
+               tmp=open(jsonfile,"w")
+               tmp.close()
+            elif os.stat(jsonfile).st_size > 0:
+               with open(jsonfile) as f:
+                  obj = json.load(f)
                   
-            # obj[str(message.topic)] = parsedJSON
+            obj[str(message.topic)] = parsedjson
             
-            # with open(jsonFile, 'w') as outfile:
-               # outfile.write(json.dumps(obj))
+            with open(jsonfile, 'w') as outfile:
+               outfile.write(json.dumps(obj))
             
-         # logging.info(threading.currentThread().getName() + " Write Complete")
+         logging.info(threading.currentthread().getname() + " write complete")
          
-      # except ValueError: 
-         # logging.error(threading.currentThread().getName() + " XML topic ValueError: Error while reading JSON")
+      except valueerror: 
+         logging.error(threading.currentthread().getName() + " XML topic ValueError: Error while reading JSON")
 
 def on_connect(client, userdata, flags, rc):
    conn_codes = [
