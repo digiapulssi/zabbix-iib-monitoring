@@ -78,12 +78,16 @@ def on_message(client, userdata, message):
          with lock:
             if not os.path.isfile(jsonFile):
                tmp=open(jsonFile,"w")
+               logging.info(threading.currentThread().getName() + " JSON file created")
                tmp.close()
             elif os.stat(jsonFile).st_size > 0:
                with open(jsonFile) as f:
+                  # load old data
+                  logging.info(threading.currentThread().getName() + " Reading JSON file")
                   obj = json.load(f)
                   objCopy = obj
-            
+            # load new data
+            logging.info(threading.currentThread().getName() + " Copying new data")
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
             final = inc_msgflow_data(str(message.topic), obj, objCopy)
