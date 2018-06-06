@@ -82,8 +82,8 @@ def on_message(client, userdata, message):
             elif os.stat(jsonFile).st_size > 0:
                with open(jsonFile) as f:
                   obj = json.load(f)
-                  
-            objCopy = obj
+                  objCopy = obj
+            
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
             final = inc_msgflow_data(str(message.topic), obj, objCopy)
