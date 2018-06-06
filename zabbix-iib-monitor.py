@@ -87,7 +87,7 @@ def on_message(client, userdata, message):
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
             # incerement values
-            if 'ElapsedTimeWaitingForInputMessageIncremental' not in obj:
+            if 'ElapsedTimeWaitingForInputMessageIncremental' in obj:
                logging.info(threading.currentThread().getName() + " Field not found")
                obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'] = obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage']
             else:
