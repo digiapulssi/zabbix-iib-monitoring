@@ -83,6 +83,11 @@ def on_message(client, userdata, message):
                   obj = json.load(f)
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
+            if 'ElapsedTimeWaitingForInputMessageIncremental' not in obj:
+               obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'] = obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage']
+            else 
+               obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'] += obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage']
+            
             with open(jsonFile, 'w') as outfile:
                json.dump(obj, outfile)
             
