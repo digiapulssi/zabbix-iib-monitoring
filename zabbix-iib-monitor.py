@@ -85,6 +85,8 @@ def on_message(client, userdata, message):
                   
             copy = obj
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
+            logging.info(json.dumps(obj))
+            logging.info(json.dumps(copy))
             
             # incerement values
             if 'ElapsedTimeWaitingForInputMessageIncremental' in obj:
