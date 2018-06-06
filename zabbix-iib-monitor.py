@@ -71,6 +71,7 @@ def on_message(client, userdata, message):
    match = re.match(pattern, message.topic)
    
    obj = {}
+   copy = {}
    # JSON topic
    if match == None:
       try:
@@ -81,12 +82,14 @@ def on_message(client, userdata, message):
             elif os.stat(jsonFile).st_size > 0:
                with open(jsonFile) as f:
                   obj = json.load(f)
+                  copy = obj
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
+            # incerement values
             if 'ElapsedTimeWaitingForInputMessageIncremental' not in obj:
                obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'] = obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage']
             else:
-               obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'] += obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage']
+               obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'] += copy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage']
             
             with open(jsonFile, 'w') as outfile:
                json.dump(obj, outfile)
