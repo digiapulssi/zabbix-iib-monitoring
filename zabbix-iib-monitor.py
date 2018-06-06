@@ -80,7 +80,7 @@ def on_message(client, userdata, message):
                tmp=open(jsonFile,"w")
                logging.info(threading.currentThread().getName() + " JSON file created")
                tmp.close()
-            elif os.stat(jsonFile).st_size > 0:
+            else:
                with open(jsonFile) as f:
                   # load old data
                   logging.info(threading.currentThread().getName() + " Reading JSON file")
@@ -95,7 +95,7 @@ def on_message(client, userdata, message):
             with open(jsonFile, 'w') as outfile:
                json.dump(final, outfile)
             
-         logging.info(threading.currentThread().getName() + " Write Complete")
+            logging.info(threading.currentThread().getName() + " Write Complete")
             
       except ValueError: 
             logging.error(threading.currentThread().getName() + " JSON topic ValueError: Error while reading JSON")
