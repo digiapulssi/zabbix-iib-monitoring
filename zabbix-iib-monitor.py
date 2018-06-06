@@ -188,6 +188,9 @@ if __name__ == "__main__":
    lock = threading.Lock()
    threads = []
    for i in range (len(brokers)):
+      if brokers[i][0] == '#':
+         continue
+      
       b=brokers[i].split(',')
       
       t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],b[2]))
