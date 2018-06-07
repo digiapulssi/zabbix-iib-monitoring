@@ -1,4 +1,4 @@
-#!replace this with the virtualenv path
+#!/home/pulssi/iib-python-venv/bin/python
 
 import paho.mqtt.client as mqtt
 import json
