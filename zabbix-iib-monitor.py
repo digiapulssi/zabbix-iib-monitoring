@@ -76,57 +76,57 @@ def on_message(client, userdata, message):
    # JSON topic
    if match == None:
       print match
-      # try:
-      with lock:
-         if not os.path.isfile(jsonFile):
-            tmp=open(jsonFile,"w")
-            tmp.write(json.dumps("{}"))
-            logging.info(threading.currentThread().getName() + " JSON file created")
-            tmp.close()
-         else:
-            with open(jsonFile) as f:
-               # load old data
-               logging.info(threading.currentThread().getName() + " Reading JSON file")
-               obj = json.load(f)
-               # copy old data
-               objCopy = obj
-               
-         # overwrite old with new data
-         logging.info(threading.currentThread().getName() + " Copying new data")
-         obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
-         
-         output = inc_msgflow_data(str(message.topic), obj, objCopy)
-         
-         with open(jsonFile, 'w') as outfile:
-            json.dump(output, outfile)
-         
-         logging.info(threading.currentThread().getName() + " Write Complete")
+      try:
+         with lock:
+            if not os.path.isfile(jsonFile):
+               tmp=open(jsonFile,"w")
+               tmp.write(json.dumps("{}"))
+               logging.info(threading.currentThread().getName() + " JSON file created")
+               tmp.close()
+            else:
+               with open(jsonFile) as f:
+                  # load old data
+                  logging.info(threading.currentThread().getName() + " Reading JSON file")
+                  obj = json.load(f)
+                  # copy old data
+                  objCopy = obj
+                  
+            # overwrite old with new data
+            logging.info(threading.currentThread().getName() + " Copying new data")
+            obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
-      # except ValueError: 
-            # logging.error(threading.currentThread().getName() + " JSON topic ValueError: Error while reading JSON")
+            output = inc_msgflow_data(str(message.topic), obj, objCopy)
+            
+            with open(jsonFile, 'w') as outfile:
+               json.dump(output, outfile)
+            
+            logging.info(threading.currentThread().getName() + " Write Complete")
+            
+      except ValueError: 
+            logging.error(threading.currentThread().getName() + " JSON topic ValueError: Error while reading JSON")
    
    # XML topic
    else:
       parsedjson = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
-      # try:
-      with lock:
-         if not os.path.isfile(jsonfile):
-            tmp=open(jsonfile,"w")
-            tmp.close()
-         elif os.stat(jsonfile).st_size > 0:
-            with open(jsonfile) as f:
-               obj = json.load(f)
-               
-         obj[str(message.topic)] = parsedjson
+      try:
+         with lock:
+            if not os.path.isfile(jsonFile):
+               tmp=open(jsonFile,"w")
+               tmp.close()
+            elif os.stat(jsonFile).st_size > 0:
+               with open(jsonFile) as f:
+                  obj = json.load(f)
+                  
+            obj[str(message.topic)] = parsedjson
+            
+            with open(jsonFile, 'w') as outfile:
+               outfile.write(json.dumps(obj))
+            
+         logging.info(threading.currentthread().getname() + " write complete")
          
-         with open(jsonfile, 'w') as outfile:
-            outfile.write(json.dumps(obj))
-         
-      logging.info(threading.currentthread().getname() + " write complete")
-         
-      # except ValueError: 
-         # logging.error(threading.currentthread().getName() + " XML topic ValueError: Error while reading JSON")
+      except ValueError: 
+         logging.error(threading.currentthread().getName() + " XML topic ValueError: Error while reading JSON")
 
 def on_connect(client, userdata, flags, rc):
    conn_codes = [
