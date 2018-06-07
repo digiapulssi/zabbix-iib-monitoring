@@ -87,12 +87,21 @@ def on_message(client, userdata, message):
                   # load old data
                   logging.info(threading.currentThread().getName() + " Reading JSON file")
                   obj = json.load(f)
+                  print "obj      " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+                  print "obj inc  " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
+                  
                   # copy old data
                   objCopy = obj
+                  
+                  print "objCopy      " + json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+                  print "objCopy inc  " + json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
                   
             # overwrite old data with new
             logging.info(threading.currentThread().getName() + " Copying new data")
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
+            
+            print json.dumps("obj      " + obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+            print json.dumps("obj inc  " + obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
             
             output = inc_msgflow_data(str(message.topic), obj, objCopy)
             
