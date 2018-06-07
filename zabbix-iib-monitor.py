@@ -10,6 +10,7 @@ from xml.etree.ElementTree import fromstring
 from six.moves import configparser as ConfigParser
 import threading
 import logging
+import copy
 
 ##### CONFIG #####
 # path to config file
@@ -91,7 +92,7 @@ def on_message(client, userdata, message):
                   print "obj inc      " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
                   
                   # copy old data
-                  objCopy = json.load(f)
+                  objCopy = copy.deepcopy(obj)
                   
                   print "objCopy      " + json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
                   print "objCopy inc  " + json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
