@@ -181,10 +181,12 @@ def inc_msgflow_data(mqtt_topic, new, old):
    keys = ['ElapsedTimeWaitingForInputMessage']
    
    for key in keys:
-      if key not in oldMsgflow:
-         newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
-      else:
+      print key in oldMsgflow
+      print key not in oldMsgflow
+      if key in oldMsgflow:
          newMsgflow[key + 'Incremental'] = oldMsgflow[key + 'Incremental'] + newMsgflow[key]
+      else:
+         newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
    
    return new
    # except KeyError:
