@@ -100,7 +100,8 @@ def on_message(client, userdata, message):
             logging.info(threading.currentThread().getName() + " Copying new data")
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
-            print "obj          " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+            print "obj new      " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+            print "objCopy      " + json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
             
             output = inc_msgflow_data(str(message.topic), obj, objCopy)
             print "output inc   " + json.dumps(output[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
