@@ -123,10 +123,10 @@ def on_message(client, userdata, message):
             with open(jsonFile, 'w') as outfile:
                outfile.write(json.dumps(obj))
             
-         logging.info(threading.currentthread().getname() + " write complete")
+         logging.info(threading.currentThread().getName() + " write complete")
          
       except ValueError: 
-         logging.error(threading.currentthread().getName() + " XML topic ValueError: Error while reading JSON")
+         logging.error(threading.currentThread().getName() + " XML topic ValueError: Error while reading JSON")
 
 def on_connect(client, userdata, flags, rc):
    conn_codes = [
