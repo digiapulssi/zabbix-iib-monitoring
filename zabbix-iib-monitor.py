@@ -87,8 +87,8 @@ def on_message(client, userdata, message):
                   # load old data
                   logging.info(threading.currentThread().getName() + " Reading JSON file")
                   obj = json.load(f)
-                  print "obj      " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
-                  print "obj inc  " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
+                  print "obj          " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+                  print "obj inc      " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
                   
                   # copy old data
                   objCopy = obj
@@ -100,10 +100,10 @@ def on_message(client, userdata, message):
             logging.info(threading.currentThread().getName() + " Copying new data")
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
-            print "obj      " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+            print "obj          " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
             
             output = inc_msgflow_data(str(message.topic), obj, objCopy)
-            print "output inc  " + json.dumps(output[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
+            print "output inc   " + json.dumps(output[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
             
             # try:
                # print json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
