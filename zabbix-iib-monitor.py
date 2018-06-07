@@ -72,6 +72,7 @@ def on_message(client, userdata, message):
    
    obj = {}
    objCopy = {}
+   output = {}
    # JSON topic
    if match == None:
       try:
@@ -85,16 +86,17 @@ def on_message(client, userdata, message):
                   # load old data
                   logging.info(threading.currentThread().getName() + " Reading JSON file")
                   obj = json.load(f)
+                  # copy old data
                   objCopy = obj
                   
-            # load new data
+            # overwrite old with new data
             logging.info(threading.currentThread().getName() + " Copying new data")
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
-            final = inc_msgflow_data(str(message.topic), obj, objCopy)
+            output = inc_msgflow_data(str(message.topic), obj, objCopy)
             
             with open(jsonFile, 'w') as outfile:
-               json.dump(final, outfile)
+               json.dump(output, outfile)
             
             logging.info(threading.currentThread().getName() + " Write Complete")
             
@@ -179,9 +181,9 @@ def inc_msgflow_data(mqtt_topic, new, old):
       
       for key in keys:
          if key not in oldMsgflow:
-            newMsgflow[key + 'Incremental'] = oldMsgflow[key]
+            newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
          else:
-            newMsgflow[key + 'Incremental'] += oldMsgflow[key]
+            newMsgflow[key + 'Incremental'] = oldMsgflow[key + 'Incremental'] + newMsgflow[key]
       
       return new
    except KeyError:
