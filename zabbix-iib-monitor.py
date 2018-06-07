@@ -73,13 +73,13 @@ def on_message(client, userdata, message):
    obj = {}
    objCopy = {}
    output = {}
+   
    # JSON topic
    if match == None:
       try:
          with lock:
             if not os.path.isfile(jsonFile):
                tmp=open(jsonFile,"w")
-               tmp.write(json.dumps("{}"))
                logging.info(threading.currentThread().getName() + " JSON file created")
                tmp.close()
             else:
@@ -90,11 +90,20 @@ def on_message(client, userdata, message):
                   # copy old data
                   objCopy = obj
                   
-            # overwrite old with new data
+            
+            print json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+            print json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+            # overwrite old data with new
             logging.info(threading.currentThread().getName() + " Copying new data")
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
+            print json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+            print json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+            
             output = inc_msgflow_data(str(message.topic), obj, objCopy)
+            
+            print json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+            print json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
             
             with open(jsonFile, 'w') as outfile:
                json.dump(output, outfile)
