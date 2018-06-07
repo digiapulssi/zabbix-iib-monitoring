@@ -75,10 +75,12 @@ def on_message(client, userdata, message):
    output = {}
    # JSON topic
    if match == None:
-      try:
+      print match
+      # try:
          with lock:
             if not os.path.isfile(jsonFile):
                tmp=open(jsonFile,"w")
+               tmp.write(json.dumps("{}"))
                logging.info(threading.currentThread().getName() + " JSON file created")
                tmp.close()
             else:
@@ -100,14 +102,14 @@ def on_message(client, userdata, message):
             
             logging.info(threading.currentThread().getName() + " Write Complete")
             
-      except ValueError: 
-            logging.error(threading.currentThread().getName() + " JSON topic ValueError: Error while reading JSON")
+      # except ValueError: 
+            # logging.error(threading.currentThread().getName() + " JSON topic ValueError: Error while reading JSON")
    
    # XML topic
    else:
       parsedjson = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
-      try:
+      # try:
          with lock:
             if not os.path.isfile(jsonfile):
                tmp=open(jsonfile,"w")
@@ -123,8 +125,8 @@ def on_message(client, userdata, message):
             
          logging.info(threading.currentthread().getname() + " write complete")
          
-      except valueerror: 
-         logging.error(threading.currentthread().getName() + " XML topic ValueError: Error while reading JSON")
+      # except ValueError: 
+         # logging.error(threading.currentthread().getName() + " XML topic ValueError: Error while reading JSON")
 
 def on_connect(client, userdata, flags, rc):
    conn_codes = [
