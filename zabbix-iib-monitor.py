@@ -75,7 +75,6 @@ def on_message(client, userdata, message):
    output = {}
    # JSON topic
    if match == None:
-      print match
       try:
          with lock:
             if not os.path.isfile(jsonFile):
@@ -175,21 +174,21 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id):
    client.loop_forever()
    
 def inc_msgflow_data(mqtt_topic, new, old):
-   try:
-      newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
-      oldMsgflow = old[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
-      
-      keys = ['ElapsedTimeWaitingForInputMessage']
-      
-      for key in keys:
-         if key not in oldMsgflow:
-            newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
-         else:
-            newMsgflow[key + 'Incremental'] = oldMsgflow[key + 'Incremental'] + newMsgflow[key]
-      
-      return new
-   except KeyError:
-      logging.error(threading.currentThread().getName() + " Error incrementing value")
+   # try:
+   newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
+   oldMsgflow = old[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
+   
+   keys = ['ElapsedTimeWaitingForInputMessage']
+   
+   for key in keys:
+      if key not in oldMsgflow:
+         newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
+      else:
+         newMsgflow[key + 'Incremental'] = oldMsgflow[key + 'Incremental'] + newMsgflow[key]
+   
+   return new
+   # except KeyError:
+      # logging.error(threading.currentThread().getName() + " Error incrementing value")
 
 if __name__ == "__main__":
    logFile = ConfigSectionMap("CONFIG")['logfile']
