@@ -205,16 +205,16 @@ def inc_msgflow_data(mqtt_topic, new, old):
       
       for key in keys:
          if (key + 'Incremental') in oldMsgflow:
-            print "old inc  " + json.dumps(oldMsgflow[key + 'Incremental'])
-            print "new      " + json.dumps(newMsgflow[key])
+            print "old inc      " + json.dumps(oldMsgflow[key + 'Incremental'])
+            print "new          " + json.dumps(newMsgflow[key])
             
             newMsgflow[key + 'Incremental'] = oldMsgflow[key + 'Incremental'] + newMsgflow[key]
-            print "new inc  " + json.dumps(newMsgflow[key + 'Incremental'])
+            print "new inc      " + json.dumps(newMsgflow[key + 'Incremental'])
          else:
-            print "old      " + json.dumps(oldMsgflow[key])
-            print "new      " + json.dumps(newMsgflow[key])
+            print "old          " + json.dumps(oldMsgflow[key])
+            print "new          " + json.dumps(newMsgflow[key])
             newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
-            print "new inc  " + json.dumps(newMsgflow[key + 'Incremental'])
+            print "new inc      " + json.dumps(newMsgflow[key + 'Incremental'])
       
       return new
    except KeyError:
