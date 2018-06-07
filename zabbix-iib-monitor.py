@@ -67,7 +67,7 @@ def on_message(client, userdata, message):
    else:
       logging.info(threading.currentThread().getName() + " Message from topic: " + message.topic)
    
-   pattern = "(IBM/IntegrationBus/(\w+)/Status/ExecutionGroup/(\w+)) | (IBM/IntegrationBus/(\w+)/Status)"
+   pattern = "(^IBM/IntegrationBus/\w+/Status$|^IBM/IntegrationBus/\w+/Status/ExecutionGroup/\w+)"
    match = re.match(pattern, message.topic)
    
    obj = {}
