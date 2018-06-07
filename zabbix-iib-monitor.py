@@ -91,7 +91,7 @@ def on_message(client, userdata, message):
                   print "obj inc      " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
                   
                   # copy old data
-                  objCopy = obj
+                  objCopy = json.load(f)
                   
                   print "objCopy      " + json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
                   print "objCopy inc  " + json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
