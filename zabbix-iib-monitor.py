@@ -101,9 +101,9 @@ def on_message(client, userdata, message):
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
             print "obj      " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
-            print "obj inc  " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
             
             output = inc_msgflow_data(str(message.topic), obj, objCopy)
+            print "output inc  " + json.dumps(output[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
             
             # try:
                # print json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
