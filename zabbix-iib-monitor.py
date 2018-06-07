@@ -96,18 +96,18 @@ def on_message(client, userdata, message):
             
             output = inc_msgflow_data(str(message.topic), obj, objCopy)
             
-            try:
-               print json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
-               print json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
+            # try:
+               # print json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+               # print json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
                
-               print json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
-               print json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
+               # print json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+               # print json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
                
-               print json.dumps(output[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
-               print json.dumps(output[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
+               # print json.dumps(output[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
+               # print json.dumps(output[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
             
-            except ValueError:
-               logging.error(threading.currentThread().getName() + " JSON topic ValueError: Error while reading JSON")
+            # except ValueError:
+               # logging.error(threading.currentThread().getName() + " JSON topic ValueError: Error while reading JSON")
             
             with open(jsonFile, 'w') as outfile:
                json.dump(output, outfile)
@@ -196,8 +196,14 @@ def inc_msgflow_data(mqtt_topic, new, old):
       
       for key in keys:
          if (key + 'Incremental') in oldMsgflow:
+            print json.dumps(oldMsgflow[key + 'Incremental'])
+            print json.dumps(newMsgflow[key])
+            
             newMsgflow[key + 'Incremental'] = oldMsgflow[key + 'Incremental'] + newMsgflow[key]
+            print json.dumps(newMsgflow[key + 'Incremental'])
          else:
+            print json.dumps(oldMsgflow[key])
+            print json.dumps(newMsgflow[key])
             newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
       
       return new
