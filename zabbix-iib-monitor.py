@@ -104,7 +104,7 @@ def on_message(client, userdata, message):
             
             logging.info(threading.currentThread().getName() + " Write Complete")
             
-      except ValueError: 
+      except: 
             logging.error(threading.currentThread().getName() + " JSON prosessing error")
    
    # XML topic
@@ -129,7 +129,7 @@ def on_message(client, userdata, message):
             
          logging.info(threading.currentThread().getName() + " Write complete")
          
-      except ValueError: 
+      except: 
          logging.error(threading.currentThread().getName() + " XML topic ValueError: Error while reading JSON")
 
 def on_connect(client, userdata, flags, rc):
@@ -179,29 +179,29 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id):
    client.loop_forever()
    
 def inc_msgflow_data(mqtt_topic, new, old):
-   # try:
+   try:
    
-   if old is None or (old is not None and mqtt_topic not in old):
-      newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
-   else:
-      newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
-      oldMsgflow = old[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
-   
-   # keys to be incremented
-   keys = ['ElapsedTimeWaitingForInputMessage']
-   
-   for key in keys:
       if old is None or (old is not None and mqtt_topic not in old):
-         newMsgflow[key + 'Incremental'] = newMsgflow[key]
+         newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
       else:
-         if (key + 'Incremental') in oldMsgflow:
-            newMsgflow[key + 'Incremental'] = oldMsgflow[key + 'Incremental'] + newMsgflow[key]
+         newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
+         oldMsgflow = old[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
+      
+      # keys to be incremented
+      keys = ['ElapsedTimeWaitingForInputMessage']
+      
+      for key in keys:
+         if old is None or (old is not None and mqtt_topic not in old):
+            newMsgflow[key + 'Incremental'] = newMsgflow[key]
          else:
-            newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
-   
-   return new
-   # except Exception as err: 
-      # logging.error(threading.currentThread().getName() + " Error incrementing values: " + str(err))
+            if (key + 'Incremental') in oldMsgflow:
+               newMsgflow[key + 'Incremental'] = oldMsgflow[key + 'Incremental'] + newMsgflow[key]
+            else:
+               newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
+      
+      return new
+   except: 
+      logging.error(threading.currentThread().getName() + " Error incrementing values")
 
 if __name__ == "__main__":
    logFile = ConfigSectionMap("CONFIG")['logfile']
