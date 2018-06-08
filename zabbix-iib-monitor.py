@@ -108,24 +108,24 @@ def on_message(client, userdata, message):
             logging.error(threading.currentThread().getName() + " JSON prosessing error: " + str(err))
    
    # XML topic
-   # else:
-      # parsedjson = ab.data(fromstring(str(message.payload.decode("utf-8"))))
+   else:
+      parsedjson = ab.data(fromstring(str(message.payload.decode("utf-8"))))
       
-      # try:
-         # with lock:
-            # if not os.path.isfile(jsonFile):
-               # tmp=open(jsonFile,"w")
-               # tmp.close()
-            # elif os.stat(jsonFile).st_size > 0:
-               # with open(jsonFile) as f:
-                  # obj = json.load(f)
+      try:
+         with lock:
+            if not os.path.isfile(jsonFile):
+               tmp=open(jsonFile,"w")
+               tmp.close()
+            elif os.stat(jsonFile).st_size > 0:
+               with open(jsonFile) as f:
+                  obj = json.load(f)
                   
-            # obj[str(message.topic)] = parsedjson
+            obj[str(message.topic)] = parsedjson
             
-            # with open(jsonFile, 'w') as outfile:
-               # outfile.write(json.dumps(obj))
+            with open(jsonFile, 'w') as outfile:
+               outfile.write(json.dumps(obj))
             
-         # logging.info(threading.currentThread().getName() + " write complete")
+         logging.info(threading.currentThread().getName() + " Write complete")
          
       except ValueError: 
          logging.error(threading.currentThread().getName() + " XML topic ValueError: Error while reading JSON")
@@ -191,8 +191,8 @@ def inc_msgflow_data(mqtt_topic, new, old):
             newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
       
       return new
-   except Exception as err: 
-      logging.error(threading.currentThread().getName() + " Error incrementing values: " + err)
+   except: 
+      logging.error(threading.currentThread().getName() + " Error incrementing values: " + traceback.print_exc())
 
 if __name__ == "__main__":
    logFile = ConfigSectionMap("CONFIG")['logfile']
