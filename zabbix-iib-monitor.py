@@ -69,14 +69,14 @@ def on_message(client, userdata, message):
       logging.info(threading.currentThread().getName() + " Message from topic: " + message.topic)
    
    pattern = "(^IBM/IntegrationBus/\w+/Status$|^IBM/IntegrationBus/\w+/Status/ExecutionGroup/\w+)"
-   match = re.match(pattern, message.topic)
+   match_status = re.match(pattern, message.topic)
    
    obj = {}
    objCopy = {}
    output = {}
    
    # JSON topic
-   if match == None:
+   if match_status == None:
       try:
          with lock:
             if not os.path.isfile(jsonFile):
@@ -180,8 +180,8 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id):
    
 def inc_msgflow_data(mqtt_topic, new, old):
    # try:
-      
-   if old is None:
+   
+   if old is None or (old is not None and message.topic not in old):
       newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
    else:
       newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
