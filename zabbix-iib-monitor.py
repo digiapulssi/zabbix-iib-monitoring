@@ -81,7 +81,6 @@ def on_message(client, userdata, message):
          with lock:
             if not os.path.isfile(jsonFile):
                tmp=open(jsonFile,"w")
-               #tmp.write(json.dumps("{}"))
                logging.info(threading.currentThread().getName() + " JSON file created")
                objCopy = None
                tmp.close()
@@ -116,9 +115,11 @@ def on_message(client, userdata, message):
          with lock:
             if not os.path.isfile(jsonFile):
                tmp=open(jsonFile,"w")
+               logging.info(threading.currentThread().getName() + " JSON file created")
                tmp.close()
             elif os.stat(jsonFile).st_size > 0:
                with open(jsonFile) as f:
+                  logging.info(threading.currentThread().getName() + " Reading JSON file")
                   obj = json.load(f)
                   
             obj[str(message.topic)] = parsedjson
