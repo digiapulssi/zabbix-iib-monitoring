@@ -81,6 +81,7 @@ def on_message(client, userdata, message):
          with lock:
             if not os.path.isfile(jsonFile):
                tmp=open(jsonFile,"w")
+               tmp.write(json.dumps("{}"))
                logging.info(threading.currentThread().getName() + " JSON file created")
                tmp.close()
             else:
@@ -88,45 +89,23 @@ def on_message(client, userdata, message):
                   # load old data
                   logging.info(threading.currentThread().getName() + " Reading JSON file")
                   obj = json.load(f)
-                  # print "obj          " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
-                  # print "obj inc      " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
                   
                   # copy old data
                   objCopy = copy.deepcopy(obj)
-                  
-                  # print "objCopy      " + json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
-                  # print "objCopy inc  " + json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
                   
             # overwrite old data with new
             logging.info(threading.currentThread().getName() + " Copying new data")
             obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
             
-            # print "obj new      " + json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
-            # print "objCopy      " + json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
-            
             output = inc_msgflow_data(str(message.topic), obj, objCopy)
-            # print "output inc   " + json.dumps(output[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
-            
-            # try:
-               # print json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
-               # print json.dumps(obj[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
-               
-               # print json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
-               # print json.dumps(objCopy[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
-               
-               # print json.dumps(output[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessage'])
-               # print json.dumps(output[str(message.topic)]['WMQIStatisticsAccounting']['MessageFlow']['ElapsedTimeWaitingForInputMessageIncremental'])
-            
-            # except ValueError:
-               # logging.error(threading.currentThread().getName() + " JSON topic ValueError: Error while reading JSON")
             
             with open(jsonFile, 'w') as outfile:
                json.dump(output, outfile)
             
             logging.info(threading.currentThread().getName() + " Write Complete")
             
-      except ValueError: 
-            logging.error(threading.currentThread().getName() + " JSON topic ValueError: Error while reading JSON")
+      except Exception as err: 
+            logging.error(threading.currentThread().getName() + " JSON prosessing error: " + err)
    
    # XML topic
    else:
@@ -207,20 +186,13 @@ def inc_msgflow_data(mqtt_topic, new, old):
       
       for key in keys:
          if (key + 'Incremental') in oldMsgflow:
-            print "old inc      " + json.dumps(oldMsgflow[key + 'Incremental'])
-            print "new          " + json.dumps(newMsgflow[key])
-            
             newMsgflow[key + 'Incremental'] = oldMsgflow[key + 'Incremental'] + newMsgflow[key]
-            print "new inc      " + json.dumps(newMsgflow[key + 'Incremental'])
          else:
-            print "old          " + json.dumps(oldMsgflow[key])
-            print "new          " + json.dumps(newMsgflow[key])
             newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
-            print "new inc      " + json.dumps(newMsgflow[key + 'Incremental'])
       
       return new
-   except KeyError:
-      logging.error(threading.currentThread().getName() + " Error incrementing value")
+   except Exception as err: 
+      logging.error(threading.currentThread().getName() + " Error incrementing values: " + err)
 
 if __name__ == "__main__":
    logFile = ConfigSectionMap("CONFIG")['logfile']
