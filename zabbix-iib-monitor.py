@@ -81,10 +81,11 @@ def on_message(client, userdata, message):
          with lock:
             if not os.path.isfile(jsonFile):
                tmp=open(jsonFile,"w")
-               tmp.write(json.dumps("{}"))
+               #tmp.write(json.dumps("{}"))
                logging.info(threading.currentThread().getName() + " JSON file created")
+               objCopy = None
                tmp.close()
-            else:
+            elif os.stat(jsonFile).st_size > 0:
                with open(jsonFile) as f:
                   # load old data
                   logging.info(threading.currentThread().getName() + " Reading JSON file")
@@ -178,21 +179,28 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id):
    
 def inc_msgflow_data(mqtt_topic, new, old):
    try:
-      newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
-      oldMsgflow = old[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
+      
+      if old is None:
+         newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
+      else:
+         newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
+         oldMsgflow = old[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
       
       # keys to be incremented
       keys = ['ElapsedTimeWaitingForInputMessage']
       
       for key in keys:
-         if (key + 'Incremental') in oldMsgflow:
-            newMsgflow[key + 'Incremental'] = oldMsgflow[key + 'Incremental'] + newMsgflow[key]
+         if old is None:
+            newMsgflow[key + 'Incremental'] = newMsgflow[key]
          else:
-            newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
+            if (key + 'Incremental') in oldMsgflow:
+               newMsgflow[key + 'Incremental'] = oldMsgflow[key + 'Incremental'] + newMsgflow[key]
+            else:
+               newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
       
       return new
-   except: 
-      logging.error(threading.currentThread().getName() + " Error incrementing values: " + traceback.print_exc())
+   except Exception as err: 
+      logging.error(threading.currentThread().getName() + " Error incrementing values: " + str(err))
 
 if __name__ == "__main__":
    logFile = ConfigSectionMap("CONFIG")['logfile']
