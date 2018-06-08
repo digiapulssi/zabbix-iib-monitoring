@@ -104,8 +104,8 @@ def on_message(client, userdata, message):
             
             logging.info(threading.currentThread().getName() + " Write Complete")
             
-      except Exception as err: 
-            logging.error(threading.currentThread().getName() + " JSON prosessing error: " + str(err))
+      except ValueError: 
+            logging.error(threading.currentThread().getName() + " JSON prosessing error")
    
    # XML topic
    else:
