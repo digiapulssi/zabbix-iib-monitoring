@@ -178,29 +178,29 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id):
    client.loop_forever()
    
 def inc_msgflow_data(mqtt_topic, new, old):
-   try:
+   # try:
       
+   if old is None:
+      newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
+   else:
+      newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
+      oldMsgflow = old[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
+   
+   # keys to be incremented
+   keys = ['ElapsedTimeWaitingForInputMessage']
+   
+   for key in keys:
       if old is None:
-         newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
+         newMsgflow[key + 'Incremental'] = newMsgflow[key]
       else:
-         newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
-         oldMsgflow = old[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
-      
-      # keys to be incremented
-      keys = ['ElapsedTimeWaitingForInputMessage']
-      
-      for key in keys:
-         if old is None:
-            newMsgflow[key + 'Incremental'] = newMsgflow[key]
+         if (key + 'Incremental') in oldMsgflow:
+            newMsgflow[key + 'Incremental'] = oldMsgflow[key + 'Incremental'] + newMsgflow[key]
          else:
-            if (key + 'Incremental') in oldMsgflow:
-               newMsgflow[key + 'Incremental'] = oldMsgflow[key + 'Incremental'] + newMsgflow[key]
-            else:
-               newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
-      
-      return new
-   except Exception as err: 
-      logging.error(threading.currentThread().getName() + " Error incrementing values: " + str(err))
+            newMsgflow[key + 'Incremental'] = oldMsgflow[key] + newMsgflow[key]
+   
+   return new
+   # except Exception as err: 
+      # logging.error(threading.currentThread().getName() + " Error incrementing values: " + str(err))
 
 if __name__ == "__main__":
    logFile = ConfigSectionMap("CONFIG")['logfile']
