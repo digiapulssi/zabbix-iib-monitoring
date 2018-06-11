@@ -1,3 +1,6 @@
-192.168.56.101,11883,client123
-192.168.56.101,11884,client123
-192.168.56.101,11885,client123
+# Lines starting with '#' are ignored
+# Format: ip/hostanme,port,clientId 
+# client id must be unique to the server
+127.0.0.1,11883,clientId
+#localhost,11883,clientId2
+192.168.1.5,11884,clientId

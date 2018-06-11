@@ -1,16 +1,17 @@
-#!/home/pulssi/iib-python-venv/bin/python
+#!/path/to/envName/bin/python
 
+from xmljson import abdera as ab
+from xml.etree.ElementTree import fromstring
+from six.moves import configparser as ConfigParser
 import paho.mqtt.client as mqtt
+import threading
+import logging
+import copy
 import json
 import time
 import os
 import re
-from xmljson import abdera as ab
-from xml.etree.ElementTree import fromstring
-from six.moves import configparser as ConfigParser
-import threading
-import logging
-import copy
+
 
 ##### CONFIG #####
 # path to config file
@@ -35,8 +36,7 @@ messageFlowName = "+"
 TOPICS= [                           
    ("IBM/IntegrationBus/" + integrationNodeName + "/Status", 0),
    ("IBM/IntegrationBus/" + integrationNodeName + "/Status/ExecutionGroup/" + integrationServerName, 0) ,
-   ("IBM/IntegrationBus/" + integrationNodeName + "/Statistics/JSON/Archive/" + integrationServerName + "/applications/" + applicationName + "/messageflows/" + messageFlowName, 0),
-   ("IBM/IntegrationBus/" + integrationNodeName + "/Statistics/JSON/Snapshot/" + integrationServerName + "/applications/" + applicationName + "/messageflows/" + messageFlowName, 0)
+   ("IBM/IntegrationBus/" + integrationNodeName + "/Statistics/JSON/Archive/" + integrationServerName + "/applications/" + applicationName + "/messageflows/" + messageFlowName, 0)
 ]
 
 ##### CODE #####
