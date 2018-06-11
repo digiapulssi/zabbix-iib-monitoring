@@ -181,17 +181,17 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id):
 def inc_msgflow_data(mqtt_topic, new, old):
    try:
    
-      if old is None or (old is not None and mqtt_topic not in old):
+      if old is None or mqtt_topic not in old:
          newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
       else:
          newMsgflow = new[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
          oldMsgflow = old[mqtt_topic]['WMQIStatisticsAccounting']['MessageFlow']
       
       # keys to be incremented
-      keys = ['ElapsedTimeWaitingForInputMessage']
+      keys = ['ElapsedTimeWaitingForInputMessage','TotalInputMessages','TotalSizeOfInputMessages']
       
       for key in keys:
-         if old is None or (old is not None and mqtt_topic not in old):
+         if old is None or mqtt_topic not in old:
             newMsgflow[key + 'Incremental'] = newMsgflow[key]
          else:
             if (key + 'Incremental') in oldMsgflow:
