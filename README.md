@@ -35,14 +35,14 @@ The virtualenv is now ready, use command ```deactivate``` to exit the virtualenv
 
 6. Copy the file(s) under [etc/zabbix/zabbix_agentd.d](etc/zabbix/zabbix_agentd.d) to `/etc/zabbix/zabbix_agentd.d`
 
-7. Copy files zabbix-iib-monitor.py, zabbix-iib-monitor.ini and brokers.txt  (E.g. user home directory)
+7. Copy files zabbix-iib-monitor.py, zabbix-iib-monitor.ini and brokers.txt anywhere (E.g. create directory "iib" in user home directory)
 
 8. Edit zabbix-iib-monitoring.py, and on the first row change the path to the virtualenv you just created:
 ```#!/path/to/envName/bin/python``` 
 
 ## Use
 
-1. Adjust data collection interval for each integration node with command:
+1. In IBM Integration Console, adjust data collection interval for each integration node (that you want to monitor) with command:
 
 **NOTE: Integration node needs to be shutdown first**
 ```
@@ -50,7 +50,7 @@ mqsichangebroker yourNodeName -v 10
 ```
 ("-v" = data collection interval, in minutes, min 1 max 43200 default 60)
 
-2. In IBM Integration Console, activate messageflow data collection for each integration node (that you want to monitor) with command:
+2. In IBM Integration Console, activate messageflow data collection for each integration node with command:
 ```
 mqsichangeflowstats yourNodeName -g -j -a -o json -c active
 ```
