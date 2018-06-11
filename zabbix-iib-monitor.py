@@ -213,7 +213,7 @@ if __name__ == "__main__":
    printMsg = config.getboolean("CONFIG", "printmsg")
    brokers_file = ConfigSectionMap("CONFIG")['brokers']
    
-   logging.basicConfig(filename=logFile, filemode='a', level=logging.DEBUG, datefmt=datetimeFormat, format='%(asctime)s  %(levelname)s: %(message)s')
+   logging.basicConfig(filename=logFile, filemode='a', level=loglvl, datefmt=datetimeFormat, format='%(asctime)s  %(levelname)s: %(message)s')
    logging.info(" --- Starting ---")
    
    broker_list=open(brokers_file, 'r')
