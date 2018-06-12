@@ -84,6 +84,7 @@ def on_message(client, userdata, message):
             logging.info(threading.currentThread().getName() + " Copying new data")
             obj[str(message.topic)] = json.loads(message.payload.decode(encoding))
             
+            # increment defined values
             output = inc_msgflow_data(str(message.topic), obj, objCopy)
             
             with open(jsonFile, 'w') as outfile:
@@ -95,6 +96,7 @@ def on_message(client, userdata, message):
             logging.error(threading.currentThread().getName() + " JSON topic ValueError: Error while reading JSON")
    
    # XML topic
+   # Node and server status only available in XML format and therefor needs to be converted to JSON first
    else:
       parsedjson = ab.data(fromstring(str(message.payload.decode(encoding))))
       
@@ -133,7 +135,7 @@ def on_connect(client, userdata, flags, rc):
    client.subscribe(TOPICS)
 
 def on_subscribe(client, userdata, mid, granted_qos):
-   logging.info(threading.currentThread().getName() + " Successfuly subscribed to topic(s)")
+   logging.info(threading.currentThread().getName() + " Successfully subscribed to topic(s)")
 
 def on_unsubscribe(client, userdata, mid):
    logging.info(threading.currentThread().getName() + " Unsubscribed from topic")
@@ -211,7 +213,7 @@ if __name__ == "__main__":
    lock = threading.Lock()
    threads = []
    for i in range (len(brokers)):
-      if brokers[i][0] == '#':
+      if brokers[i].strip() == "" or brokers[i].lstrip()[0] == '#':
          continue
       
       b=brokers[i].split(',')

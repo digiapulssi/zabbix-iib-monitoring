@@ -1,6 +1,11 @@
 # Lines starting with '#' are ignored
+#
+# Place every connection on its own line
 # Format: ip/hostname,port,clientId 
-# client id must be unique to the server
+#
+# client id can be anything, but must be unique to the MQTT server
+# if a connection is made with an id that already exists on the MQTT server, the previous connection will be disconnected
+#
 127.0.0.1,11883,clientId
-#localhost,11883,clientId2
-#192.168.1.5,11884,clientId
+localhost,11883,clientId2
+192.168.1.5,11884,clientId
