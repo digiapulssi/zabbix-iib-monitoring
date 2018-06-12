@@ -37,10 +37,11 @@ The virtualenv is now ready, use command ```deactivate``` to exit the virtualenv
 
 7. Copy the file(s) under [etc/zabbix/zabbix_agentd.d](etc/zabbix/zabbix_agentd.d) to `/etc/zabbix/zabbix_agentd.d`
 
-8. Copy files zabbix-iib-monitor.py, zabbix-iib-monitor.ini and brokers.txt anywhere (E.g. create directory "iib" in user home directory)
+8. Copy files zabbix-iib-monitor.py, zabbix-iib-monitor.ini and brokers.txt anywhere (E.g. create directory "zabbix-iib" in user home directory)
 
 9. Edit zabbix-iib-monitoring.py, and on the first row change the path to the virtualenv you just created:
 ```#!/path/to/envName/bin/python``` 
+
 This way the script is automatically executed in the virtualenv, without the need to activate it first.
 
 ## Use
@@ -59,12 +60,13 @@ To activate data collection for all servers and messageflows in a specific node,
 ```
 mqsichangeflowstats yourNodeName -g -j -a -o json -c active
 ```
-("-g" = all integration servers, "-j" = all message flows, "-a" = archive publishing, "-o json" = output format "json", "-c active" = control: enable data collection, use command ```mqsichangeflowstats``` to see all options)
+("-g" = all integration servers, "-j" = all message flows, "-a" = archive publishing, "-o json" = output format "json", "-c active" = control: enable data collection)
 
 If you wish to activate data collection only for a specific message flow, use the following command:
 ```
-mqsichangeflowstats yourNodeName -e serverName (-k applicationName or -y libraryName) -f messageflowName -a -o json -c active
+mqsichangeflowstats yourNodeName -e serverName -k applicationName (-y staticLibraryName) -f messageflowName -a -o json -c active
 ```
+Use command ```mqsichangeflowstats -h``` to see all options.
 
 **NOTE: Messageflow data collection is off by default and must be reactivated after messageflow (re)deployment!**
 
