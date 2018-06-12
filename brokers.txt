@@ -6,6 +6,8 @@
 # client id can be anything, but must be unique to the MQTT server
 # if a connection is made with an id that already exists on the MQTT server, the previous connection will be disconnected
 #
+# Few examples below (replace with your own connections)
+#
 127.0.0.1,11883,clientId
 localhost,11883,clientId2
 192.168.1.5,11884,clientId
