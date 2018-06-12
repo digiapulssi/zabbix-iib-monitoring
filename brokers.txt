@@ -1,5 +1,5 @@
 # Lines starting with '#' are ignored
-# Format: ip/hostanme,port,clientId 
+# Format: ip/hostname,port,clientId 
 # client id must be unique to the server
 127.0.0.1,11883,clientId
 #localhost,11883,clientId2

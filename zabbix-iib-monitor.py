@@ -45,24 +45,11 @@ config = ConfigParser.ConfigParser()
 confFile = config.read(configFile)
 conf_sections = config.sections()
 
-def ConfigSectionMap(section):
-    dict1 = {}
-    options = config.options(section)
-    for option in options:
-        try:
-            dict1[option] = config.get(section, option)
-            if dict1[option] == -1:
-               logging.info("Configuration file, skip: %s" % option)
-        except:
-            logging.info("Exception with configuration file on %s!" % option)
-            dict1[option] = None
-    return dict1
-
 def on_message(client, userdata, message):
 
    if printMsg:
       logging.info(threading.currentThread().getName() + " Message from topic: " + message.topic)
-      logging.info(threading.currentThread().getName() + " Message Payload: " + str(message.payload.decode("utf-8")))
+      logging.info(threading.currentThread().getName() + " Message Payload: " + str(message.payload.decode(encoding)))
       logging.info(threading.currentThread().getName() + " Message qos=" + str(message.qos))
       logging.info(threading.currentThread().getName() + " Message retain flag=" + str(message.retain))
    else:
@@ -95,7 +82,7 @@ def on_message(client, userdata, message):
                   
             # overwrite old data with new
             logging.info(threading.currentThread().getName() + " Copying new data")
-            obj[str(message.topic)] = json.loads(message.payload.decode("utf-8"))
+            obj[str(message.topic)] = json.loads(message.payload.decode(encoding))
             
             output = inc_msgflow_data(str(message.topic), obj, objCopy)
             
@@ -105,11 +92,11 @@ def on_message(client, userdata, message):
             logging.info(threading.currentThread().getName() + " Write Complete")
             
       except: 
-            logging.error(threading.currentThread().getName() + " JSON prosessing error")
+            logging.error(threading.currentThread().getName() + " JSON topic ValueError: Error while reading JSON")
    
    # XML topic
    else:
-      parsedjson = ab.data(fromstring(str(message.payload.decode("utf-8"))))
+      parsedjson = ab.data(fromstring(str(message.payload.decode(encoding))))
       
       try:
          with lock:
@@ -204,14 +191,15 @@ def inc_msgflow_data(mqtt_topic, new, old):
       logging.error(threading.currentThread().getName() + " Error incrementing values")
 
 if __name__ == "__main__":
-   logFile = ConfigSectionMap("CONFIG")['logfile']
+   logFile = config.get("CONFIG", "logfile")
    enableLogMsg = config.getboolean("CONFIG", "enablelogmsg")
-   loglvl = ConfigSectionMap("CONFIG")['loglevel']
-   datetimeFormat = ConfigSectionMap("CONFIG")['datetimeformat']
+   loglvl = config.get("CONFIG", "loglevel")
+   datetimeFormat = config.get("CONFIG", "datetimeformat")
+   encoding = cofig.get("CONFIG", "encoding")
    
-   jsonFile = ConfigSectionMap("CONFIG")['jsonfile']
+   jsonFile = config.get("CONFIG", "jsonfile")
    printMsg = config.getboolean("CONFIG", "printmsg")
-   brokers_file = ConfigSectionMap("CONFIG")['brokers']
+   brokers_file = config.get("CONFIG", "brokers")
    
    logging.basicConfig(filename=logFile, filemode='a', level=loglvl, datefmt=datetimeFormat, format='%(asctime)s  %(levelname)s: %(message)s')
    logging.info(" --- Starting ---")
