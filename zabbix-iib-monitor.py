@@ -12,7 +12,6 @@ import time
 import os
 import re
 
-
 ##### CONFIG #####
 # path to config file
 configFile = "zabbix-iib-monitor.ini"
@@ -197,7 +196,7 @@ if __name__ == "__main__":
    enableLogMsg = config.getboolean("CONFIG", "enablelogmsg")
    loglvl = config.get("CONFIG", "loglevel")
    datetimeFormat = config.get("CONFIG", "datetimeformat")
-   encoding = cofig.get("CONFIG", "encoding")
+   encoding = config.get("CONFIG", "encoding")
    
    jsonFile = config.get("CONFIG", "jsonfile")
    printMsg = config.getboolean("CONFIG", "printmsg")
