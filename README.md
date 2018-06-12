@@ -2,7 +2,7 @@
 
 This project contains scripts for listening to IBM Integration Bus MQTT messages and ready-to-install scripts for Zabbix Agent. 
 
-These scripts do **not require** to be local with IBM Integration Bus, although you will need to change the bind address of each integration node you want to monitor from the outside. Bind address can be found in file at C:\ProgramData\IBM\MQSI\components\nodeName\config\nodeName
+These scripts do **not require** to be installed locally with IBM Integration Bus, although you will need to change the bind address of each integration node you want to monitor from the outside. Bind address can be found in a file at C:\ProgramData\IBM\MQSI\components\nodeName\config\nodeName
 
 ## Installation
 
