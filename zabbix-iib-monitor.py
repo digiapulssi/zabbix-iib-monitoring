@@ -61,65 +61,54 @@ def on_message(client, userdata, message):
    objCopy = {}
    output = {}
    
-   # JSON topic
-   if match_status == None:
+   with lock:
       try:
-         with lock:
-            if not os.path.isfile(jsonFile):
-               tmp=open(jsonFile,"w")
-               logging.info(threading.currentThread().getName() + " JSON file created")
-               objCopy = None
-               tmp.close()
-            elif os.stat(jsonFile).st_size > 0:
-               with open(jsonFile) as f:
-                  # load old data
-                  logging.info(threading.currentThread().getName() + " Reading JSON file")
-                  obj = json.load(f)
-                  
-                  # copy old data
-                  objCopy = copy.deepcopy(obj)
-                  
-            # overwrite old data with new
-            logging.info(threading.currentThread().getName() + " Copying new data")
+         if not os.path.isfile(jsonFile):
+            tmp=open(jsonFile,"w")
+            logging.info(threading.currentThread().getName() + " JSON file created")
+            objCopy = None
+            tmp.close()
+         elif os.stat(jsonFile).st_size > 0:
+            with open(jsonFile) as f:
+               # load old data
+               logging.info(threading.currentThread().getName() + " Reading JSON file")
+               obj = json.load(f)
+               
+               # copy old data
+               objCopy = copy.deepcopy(obj)
+      except:
+         logging.error(threading.currentThread().getName() + " ValueError: Error while creating/reading JSON")
+         
+      # overwrite old data with new
+      if match_status == None:
+         # if JSON
+         try:
             obj[str(message.topic)] = json.loads(message.payload.decode(encoding))
-            
             # increment defined values
             output = inc_msgflow_data(str(message.topic), obj, objCopy)
-            
-            with open(jsonFile, 'w') as outfile:
-               json.dump(output, outfile)
-            
-            logging.info(threading.currentThread().getName() + " Write Complete")
-            
-      except: 
-            logging.error(threading.currentThread().getName() + " JSON topic ValueError: Error while reading JSON")
+            logging.info(threading.currentThread().getName() + " New data acquired successfully")
+         except:
+            logging.error(threading.currentThread().getName() + " JSON topic: Error copying new data")
    
-   # XML topic
-   # Node and server status only available in XML format and therefor needs to be converted to JSON first
-   else:
-      parsedjson = ab.data(fromstring(str(message.payload.decode(encoding))))
-      
-      try:
-         with lock:
-            if not os.path.isfile(jsonFile):
-               tmp=open(jsonFile,"w")
-               logging.info(threading.currentThread().getName() + " JSON file created")
-               tmp.close()
-            elif os.stat(jsonFile).st_size > 0:
-               with open(jsonFile) as f:
-                  logging.info(threading.currentThread().getName() + " Reading JSON file")
-                  obj = json.load(f)
-                  
+      else:
+         #if XML
+         try:
+            parsedjson = ab.data(fromstring(str(message.payload.decode(encoding))))
             obj[str(message.topic)] = parsedjson
-            
-            with open(jsonFile, 'w') as outfile:
-               outfile.write(json.dumps(obj))
-            
-         logging.info(threading.currentThread().getName() + " Write complete")
+            output = obj
+            logging.info(threading.currentThread().getName() + " New data acquired successfully")
+         except:
+            logging.error(threading.currentThread().getName() + " XML topic: Error copying new data")
          
-      except: 
-         logging.error(threading.currentThread().getName() + " XML topic ValueError: Error while reading JSON")
-
+      try:
+         # write to file
+         with open(jsonFile, 'w') as outfile:
+            json.dump(output, outfile)
+         
+         logging.info(threading.currentThread().getName() + " Write Complete")
+      except:
+         logging.error(threading.currentThread().getName() + " Error writing to file")
+   
 def on_connect(client, userdata, flags, rc):
    conn_codes = [
       "Connection successful",
