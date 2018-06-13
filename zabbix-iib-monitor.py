@@ -91,7 +91,7 @@ def on_message(client, userdata, message):
             logging.error(threading.currentThread().getName() + " JSON topic: Error copying new data")
    
       else:
-         #if XML
+         #if XML (== node or server status topic, defined by regex variable "pattern")
          try:
             parsedjson = ab.data(fromstring(str(message.payload.decode(encoding))))
             obj[str(message.topic)] = parsedjson
