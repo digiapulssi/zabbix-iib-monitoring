@@ -5,20 +5,23 @@ This project contains scripts for listening to IBM Integration Bus MQTT messages
 These scripts do **not require** to be installed locally with IBM Integration Bus, although you will need to change the bind address of each integration node you want to monitor from the outside. Bind address can be found in a file at C:\ProgramData\IBM\MQSI\components\nodeName\config\nodeName
 
 ## Installation
+sudo su
+
+wget yms.
 
 #### 1. Install virtualenv with pip
 
-```pip install virtualenv```
+```pip install virtualenv```  (ubuntu apt)
 
 #### 2. Create a new virtual environment with any name
 
-```virtualenv envName``` or using full path ```virtualenv /path/to/envName```
+using full path ```virtualenv /opt/zabbix-iib-monitoring/virtualenv```
 
 #### 3. Activate virtualenv
 
-```source /path/to/envName/bin/activate```
+```. /opt/zabbix-iib-monitoring/virtualenv/bin/activate```
 
-"(envName)" should appear at the start of the command line once it's activated
+"(virtualenv)" should appear at the start of the command line once it's activated
 
 #### 4. The following packages are required:
 - xmljson
@@ -36,11 +39,13 @@ The virtualenv is now ready, use command ```deactivate``` to exit the virtualenv
 #### 6. Make sure all scripts are executable ```sudo chmod a+x /etc/zabbix/scripts/*```
 
 #### 7. Copy the file(s) under [etc/zabbix/zabbix_agentd.d](etc/zabbix/zabbix_agentd.d) to `/etc/zabbix/zabbix_agentd.d`
+chmod read
 
 #### 8. Copy files zabbix-iib-monitor.py, zabbix-iib-monitor.ini and brokers.txt anywhere (E.g. create directory "zabbix-iib" in user home directory)
+/opt/zabbix-iib-monitoring/scripts
 
 #### 9. Edit zabbix-iib-monitoring.py, and on the first row change the path to the virtualenv you just created:
-```#!/path/to/envName/bin/python``` 
+```#!/opt/zabbix-iib-monitoring/virtualenv/bin/python``` 
 
 This way the script is automatically executed in the virtualenv, without the need to activate it first.
 
@@ -69,8 +74,10 @@ mqsichangeflowstats yourNodeName -e serverName -k applicationName (-y staticLibr
 Use command ```mqsichangeflowstats -h``` to see all options.
 
 **NOTE: Messageflow data collection is off by default and must be reactivated after messageflow (re)deployment!**
+service zabbix-agent restart
 
-#### 3. Run "zabbix-iib-monitoring.py" (check "zabbix-iib-monitoring.ini" for connection settings) to start receiving monitoring data
+broker.txt
+#### 3. Run as zabbix user "zabbix-iib-monitoring.py" (check "zabbix-iib-monitoring.ini" for connection settings) to start receiving monitoring data
 
 #### 4. In Zabbix add 3 iib.mqtt_topic.discovery rules
    - One with key "iib.mqtt_topic.discovery[node]"
