@@ -27,7 +27,7 @@ For Ubuntu
 
 ```virtualenv /opt/zabbix-iib-monitoring/virtualenv```
 
-**NOTE: If you use another path you need to update the path on the first line of zabbix-iib-monitoring.py**
+**NOTE: If you use another path you need to update the path on the first line of zabbix-iib-monitoring.py (as well as any following commands in this guide)**
 
 ### Activate virtualenv
 
@@ -50,18 +50,23 @@ Once all packages are sucessfully installed the virtualenv is ready, use command
 
 ### Copy the file(s) under [etc/zabbix/scripts](etc/zabbix/scripts) to `/etc/zabbix/scripts`
 
+### Change ownership of scripts to "zabbix" user ```chown zabbix:zabbix /etc/zabbix/scripts/*```
 
-### Make sure all scripts are readable and executable ```sudo chmod a+rx /etc/zabbix/scripts/*```
+### Make all scripts are readable and executable ```chmod a+rx /etc/zabbix/scripts/*```
 
 
 ### Copy the file(s) under [etc/zabbix/zabbix_agentd.d](etc/zabbix/zabbix_agentd.d) to `/etc/zabbix/zabbix_agentd.d`
-chmod read
+
+### Change ownership of files to "zabbix" user ```chown zabbix:zabbix /etc/zabbix/zabbix_agentd.d/*```
+
+### Make all files readable ```chmod a+r /etc/zabbix/zabbix_agentd.d/*```
 
 
 ### Copy files *zabbix-iib-monitor.py*, *zabbix-iib-monitor.ini* and *brokers.txt* to /opt/zabbix-iib-monitoring/scripts 
 
-chmod read
+### Make *zabbix-iib-monitor.py* readable and executable ```chmod a+rx /opt/zabbix-iib-monitoring/scripts/zabbix-iib-monitor.py```
 
+### Make *zabbix-iib-monitor.ini* and *brokers.txt* files readable ```chmod a+r /opt/zabbix-iib-monitoring/scripts/zabbix-iib-monitor.ini /opt/zabbix-iib-monitoring/scripts/brokers.txt```
 
 ## Use
 
@@ -90,13 +95,15 @@ Use command ```mqsichangeflowstats -h``` to see all options.
 **NOTE: Messageflow data collection is off by default and must be reactivated after messageflow (re)deployment!**
 
 
-### Restart Zabbix-agent service
-
-```sudo service zabbix-agent restart```
-
 ### Add broker IP/hostnames and ports to /opt/zabbix-iib-monitoring/scripts/broker.txt
 
-### As zabbix user, run "zabbix-iib-monitoring.py"  to start receiving monitoring data (check "zabbix-iib-monitoring.ini" for settings regarding file paths, logging, etc.)
+```nano /opt/zabbix-iib-monitoring/scripts/broker.txt```
+
+### Switch to zabbix user
+
+```sudo su zabbix```
+
+### Run "zabbix-iib-monitoring.py"  to start receiving monitoring data (check "zabbix-iib-monitoring.ini" for settings regarding file paths, logging, etc.)
 
 ### In Zabbix add 3 iib.mqtt_topic.discovery rules
    - One with key "iib.mqtt_topic.discovery[node]"
