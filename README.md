@@ -115,7 +115,7 @@ Use command ```mqsichangeflowstats -h``` to see all options.
 
 ### Switch to zabbix user
 
-```sudo su zabbix```
+```sudo su - zabbix```
 
 ### Run "zabbix-iib-monitoring.py"  to start receiving monitoring data (check "zabbix-iib-monitoring.ini" for settings regarding file paths, logging, etc.)
 
