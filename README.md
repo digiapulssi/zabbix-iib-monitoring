@@ -12,7 +12,11 @@ These scripts do **not require** to be installed locally with IBM Integration Bu
 
 ### Download files from GitHub
 
-curl -LJO https://github.com/digiapulssi/zabbix-iib-monitoring/archive/develop.tar.gz 
+```curl -LJO https://github.com/digiapulssi/zabbix-iib-monitoring/archive/develop.tar.gz```
+
+### Unzip downloaded files
+
+```tar zxvf zabbix-iib-monitoring-develop.tar.gz```
 
 ### Install pip (python v2) or pip3 (python v3)
 
@@ -50,32 +54,42 @@ Once all packages are sucessfully installed the virtualenv is ready, use command
 
 ### Copy the file(s) under [etc/zabbix/scripts](etc/zabbix/scripts) to `/etc/zabbix/scripts`
 
-### Change ownership of scripts to "zabbix" user ```chown zabbix:zabbix /etc/zabbix/scripts/*```
+### Change ownership of scripts to "zabbix" user 
 
-### Make all scripts are readable and executable ```chmod a+rx /etc/zabbix/scripts/*```
+```chown zabbix:zabbix /etc/zabbix/scripts/*```
 
+### Make all scripts are readable and executable 
+
+```chmod a+rx /etc/zabbix/scripts/*```
 
 ### Copy the file(s) under [etc/zabbix/zabbix_agentd.d](etc/zabbix/zabbix_agentd.d) to `/etc/zabbix/zabbix_agentd.d`
 
-### Change ownership of files to "zabbix" user ```chown zabbix:zabbix /etc/zabbix/zabbix_agentd.d/*```
+### Change ownership of files to "zabbix" user 
 
-### Make all files readable ```chmod a+r /etc/zabbix/zabbix_agentd.d/*```
+```chown zabbix:zabbix /etc/zabbix/zabbix_agentd.d/*```
 
+### Make all files readable 
+
+```chmod a+r /etc/zabbix/zabbix_agentd.d/*```
 
 ### Copy files *zabbix-iib-monitor.py*, *zabbix-iib-monitor.ini* and *brokers.txt* to /opt/zabbix-iib-monitoring/scripts 
 
-### Make *zabbix-iib-monitor.py* readable and executable ```chmod a+rx /opt/zabbix-iib-monitoring/scripts/zabbix-iib-monitor.py```
+### Make *zabbix-iib-monitor.py* readable and executable 
 
-### Make *zabbix-iib-monitor.ini* and *brokers.txt* files readable ```chmod a+r /opt/zabbix-iib-monitoring/scripts/zabbix-iib-monitor.ini /opt/zabbix-iib-monitoring/scripts/brokers.txt```
+```chmod a+rx /opt/zabbix-iib-monitoring/scripts/zabbix-iib-monitor.py```
+
+### Make *zabbix-iib-monitor.ini* and *brokers.txt* files readable 
+
+```chmod a+r /opt/zabbix-iib-monitoring/scripts/zabbix-iib-monitor.ini /opt/zabbix-iib-monitoring/scripts/brokers.txt```
 
 ## Use
 
 ### In IBM Integration Console, adjust data collection interval for each integration node (that you want to monitor) with command:
 
 **NOTE: Integration node needs to be shutdown first**
-```
-mqsichangebroker yourNodeName -v 10
-```
+
+```mqsichangebroker yourNodeName -v 10```
+
 ("-v" = data collection interval, in minutes, min 1 max 43200 default 60)
 
 ### In IBM Integration Console, activate messageflow data collection.
