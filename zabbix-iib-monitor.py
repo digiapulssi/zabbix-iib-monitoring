@@ -1,4 +1,4 @@
-#!/path/to/envName/bin/python
+#!/opt/zabbix-iib-monitoring/virtualenv/bin/python
 
 from xmljson import abdera as ab
 from xml.etree.ElementTree import fromstring
@@ -14,7 +14,7 @@ import re
 
 ##### CONFIG #####
 # path to config file
-configFile = "zabbix-iib-monitor.ini"
+configFile = "/opt/zabbix-iib-monitoring/scripts/zabbix-iib-monitor.ini"
 
 ##### TOPICS #####
 #
@@ -206,7 +206,7 @@ if __name__ == "__main__":
       
       b=brokers[i].split(',')
       
-      t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],b[2]))
+      t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],"clientId"))
       threads.append(t)
       t.start()
    
