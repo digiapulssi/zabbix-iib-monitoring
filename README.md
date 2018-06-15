@@ -10,7 +10,7 @@ These scripts do **not require** to be installed locally with IBM Integration Bu
 
 ```sudo su```
 
-#### Download all files from GitHub
+#### Download files from GitHub
 
 curl -LJO https://github.com/digiapulssi/zabbix-iib-monitoring/archive/develop.tar.gz 
 
