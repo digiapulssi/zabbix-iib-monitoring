@@ -16,7 +16,7 @@ curl -LJO https://github.com/digiapulssi/zabbix-iib-monitoring/archive/develop.t
 
 #### Install pip (python v2) or pip3 (python v3)
 
-**For Ubuntu**
+For Ubuntu
 ```apt-get install python-pip``` or ```apt-get install python3-pip```
 
 #### Install virtualenv with pip
