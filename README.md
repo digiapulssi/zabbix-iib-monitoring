@@ -20,7 +20,8 @@ These scripts do **not require** to be installed locally with IBM Integration Bu
 
 ### Install pip (python v2) or pip3 (python v3)
 
-For Ubuntu
+For Ubuntu: ```apt install virtualenv```
+
 ```apt-get install python-pip``` or ```apt-get install python3-pip```
 
 ### Install virtualenv
