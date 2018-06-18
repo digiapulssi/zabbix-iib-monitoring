@@ -126,6 +126,20 @@ Use command ```mqsichangeflowstats -h``` to see all options.
 
 ### Run "zabbix-iib-monitoring.py"  to start receiving monitoring data (check "zabbix-iib-monitoring.ini" for settings regarding file paths, logging, etc.)
 
+### (Optional) Test if the scripts are working
+
+```zabbix_agentd -t "iib.mqtt_topic.discovery[node]"```
+
+Should return something like this:
+```
+"data": [
+    {
+      "{#TOPIC}": "IBM/IntegrationBus/IIBNODE/Status"
+    }
+]
+```
+
+
 ### In Zabbix add 3 iib.mqtt_topic.discovery rules
    - One with key "iib.mqtt_topic.discovery[node]"
    - One with key "iib.mqtt_topic.discovery[server]"
