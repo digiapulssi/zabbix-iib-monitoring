@@ -20,7 +20,9 @@ These scripts do **not require** to be installed locally with IBM Integration Bu
 
 ### Install pip (for python v2) or pip3 (for python v3)
 
-For Ubuntu: ```apt install virtualenv```
+For Ubuntu: 
+
+```apt install virtualenv```
 
 ```apt-get install python-pip``` or ```apt-get install python3-pip```
 
@@ -133,6 +135,8 @@ Use command ```mqsichangeflowstats -h``` to see all options.
 ```sudo su - zabbix```
 
 ### Run "zabbix-iib-monitoring.py"  to start receiving monitoring data (check "zabbix-iib-monitoring.ini" for settings regarding file paths, logging, etc.)
+
+./opt/zabbix-iib-monitoring/scripts/zabbix-iib-monitoring.py
 
 ### (Optional) Test if the scripts are working
 
