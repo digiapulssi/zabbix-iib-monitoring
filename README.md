@@ -12,11 +12,11 @@ These scripts do **not require** to be installed locally with IBM Integration Bu
 
 ### Download files from GitHub
 
-```curl -LJO https://github.com/digiapulssi/zabbix-iib-monitoring/archive/develop.tar.gz```
+```curl -LJO https://github.com/digiapulssi/zabbix-iib-monitoring/archive/master.tar.gz```
 
 ### Unzip downloaded files
 
-```tar zxvf zabbix-iib-monitoring-develop.tar.gz```
+```tar zxvf zabbix-iib-monitoring-master.tar.gz```
 
 ### Install pip (for python v2) or pip3 (for python v3)
 
