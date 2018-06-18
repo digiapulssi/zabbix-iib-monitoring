@@ -26,7 +26,11 @@ For Ubuntu: ```apt install virtualenv```
 
 ### Install virtualenv
 
-Ubuntu: apt install virtualenv
+Ubuntu: 
+
+```apt install virtualenv```
+
+All systems:
 
 ```pip install virtualenv``` or ```pip3 install virtualenv```
 
@@ -61,7 +65,7 @@ Once all packages are sucessfully installed the virtualenv is ready, use command
 
 ```chown zabbix:zabbix /etc/zabbix/scripts/*```
 
-### Make all scripts are readable and executable 
+### Make all scripts readable and executable 
 
 ```chmod a+rx /etc/zabbix/scripts/*```
 
