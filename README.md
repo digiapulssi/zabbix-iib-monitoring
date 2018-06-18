@@ -87,6 +87,8 @@ Once all packages are sucessfully installed the virtualenv is ready, use command
 
 ### Copy files *zabbix-iib-monitor.py*, *zabbix-iib-monitor.ini* and *brokers.txt* to /opt/zabbix-iib-monitoring/scripts 
 
+```mkdir /opt/zabbix-iib-monitoring/scripts```
+
 ```cp zabbix-iib-monitoring-develop/zabbix-iib-monitor.* /opt/zabbix-iib-monitoring/scripts```
 
 ```cp zabbix-iib-monitoring-develop/brokers.txt /opt/zabbix-iib-monitoring/scripts```
