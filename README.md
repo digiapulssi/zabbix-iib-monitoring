@@ -138,7 +138,7 @@ Should return something like this:
     }
 ]
 ```
-
+If it did, everything should be ready for adding discovery rules and items to Zabbix
 
 ### In Zabbix add 3 iib.mqtt_topic.discovery rules
    - One with key "iib.mqtt_topic.discovery[node]"
