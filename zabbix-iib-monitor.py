@@ -211,6 +211,7 @@ if __name__ == "__main__":
       t.start()
    
    while threading.activeCount() > 1:
+      time.sleep(0.01)
       pass
    else:
       logging.info(" --- Exiting ---")
