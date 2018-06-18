@@ -18,7 +18,7 @@ These scripts do **not require** to be installed locally with IBM Integration Bu
 
 ```tar zxvf zabbix-iib-monitoring-develop.tar.gz```
 
-### Install pip (python v2) or pip3 (python v3)
+### Install pip (for python v2) or pip3 (for python v3)
 
 For Ubuntu: ```apt install virtualenv```
 
@@ -61,6 +61,8 @@ Once all packages are sucessfully installed the virtualenv is ready, use command
 
 ### Copy the file(s) under [etc/zabbix/scripts](etc/zabbix/scripts) to `/etc/zabbix/scripts`
 
+```cp zabbix-iib-monitoring-develop/etc/zabbix/scripts/* /etc/zabbix/scripts/```
+
 ### Change ownership of scripts to "zabbix" user 
 
 ```chown zabbix:zabbix /etc/zabbix/scripts/*```
@@ -71,6 +73,8 @@ Once all packages are sucessfully installed the virtualenv is ready, use command
 
 ### Copy the file(s) under [etc/zabbix/zabbix_agentd.d](etc/zabbix/zabbix_agentd.d) to `/etc/zabbix/zabbix_agentd.d`
 
+```cp zabbix-iib-monitoring-develop/etc/zabbix/zabbix_agentd.d/* /etc/zabbix/zabbix_agentd.d/```
+
 ### Change ownership of files to "zabbix" user 
 
 ```chown zabbix:zabbix /etc/zabbix/zabbix_agentd.d/*```
@@ -80,6 +84,10 @@ Once all packages are sucessfully installed the virtualenv is ready, use command
 ```chmod a+r /etc/zabbix/zabbix_agentd.d/*```
 
 ### Copy files *zabbix-iib-monitor.py*, *zabbix-iib-monitor.ini* and *brokers.txt* to /opt/zabbix-iib-monitoring/scripts 
+
+```cp zabbix-iib-monitoring-develop/zabbix-iib-monitor.* /opt/zabbix-iib-monitoring/scripts```
+
+```cp zabbix-iib-monitoring-develop/brokers.txt /opt/zabbix-iib-monitoring/scripts```
 
 ### Make *zabbix-iib-monitor.py* readable and executable 
 
