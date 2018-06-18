@@ -210,9 +210,8 @@ if __name__ == "__main__":
       threads.append(t)
       t.start()
    
-   while threading.activeCount() > 1:
-      time.sleep(0.01)
-      pass
-   else:
-      logging.info(" --- Exiting ---")
+   for i in range (len(threads)):
+      threads[i].join()
+   
+   logging.info(" --- Exiting ---")
    
