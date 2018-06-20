@@ -140,7 +140,7 @@ def on_disconnect(client, userdata, rc):
 def on_log(client, userdata, level, buf):
    logging.info(threading.currentThread().getName() + " Log message: " + str(client) + " " + str(userdata) + " " + str(buf))
    
-def thread_MQTT(BROKER_ADDRESS,PORT,id):
+def thread_MQTT(BROKER_ADDRESS,PORT,id, doExit):
    client = mqtt.Client(id) 
    
    client.on_connect = on_connect
@@ -155,7 +155,10 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id):
    logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT + " with id: " + id)
    client.connect( BROKER_ADDRESS, int(PORT))
    
-   client.loop_forever()
+   while not doExit.isSet():
+      client.loop()
+   else:
+      logging.info(threading.currentThread().getName() + " Exited gracefully.")
    
 def inc_msgflow_data(mqtt_topic, new, old):
    try:
@@ -183,17 +186,9 @@ def inc_msgflow_data(mqtt_topic, new, old):
       logging.error(threading.currentThread().getName() + " Error incrementing values")
 
 def signal_handler(signal, frame):
-   print('You pressed Ctrl+C!')
-   for i in range (len(threads)):
-      threads[i].stop()
    
    for i in range (len(threads)):
-      threads[i].join()
-   
-   sys.exit(0)
-   
-signal.signal(signal.SIGINT, signal_handler)
-      
+      threads[i].e.set()
       
 if __name__ == "__main__":
    logFile = config.get("CONFIG", "logfile")
@@ -205,6 +200,9 @@ if __name__ == "__main__":
    jsonFile = config.get("CONFIG", "jsonfile")
    printMsg = config.getboolean("CONFIG", "printmsg")
    brokers_file = config.get("CONFIG", "brokers")
+   
+   # this == if SIGINT recieved run signal_handler?
+   signal.signal(signal.SIGINT, signal_handler)
    
    if not os.path.isfile(logFile):
       tmp=open(logFile,"w")
@@ -225,7 +223,8 @@ if __name__ == "__main__":
       
       b=brokers[i].split(',')
       
-      t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],"clientId"))
+      e = threading.Event()
+      t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],"clientId",e))
       threads.append(t)
       t.start()
    
