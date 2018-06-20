@@ -1,4 +1,4 @@
-#!/path/to/envName/bin/python
+#!/opt/zabbix-iib-monitor/virtualenv/bin/python
 
 from xmljson import abdera as ab
 from xml.etree.ElementTree import fromstring
@@ -11,10 +11,12 @@ import json
 import time
 import os
 import re
+import signal
+import sys
 
 ##### CONFIG #####
 # path to config file
-configFile = "zabbix-iib-monitor.ini"
+configFile = "/opt/zabbix-iib-monitor/scripts/zabbix-iib-monitor.ini"
 
 ##### TOPICS #####
 #
@@ -32,7 +34,7 @@ messageFlowName = "+"
 
 # Topics that will be subscribed to
 # format: ("topic", QoS)
-TOPICS= [                           
+TOPICS= [ 
    ("IBM/IntegrationBus/" + integrationNodeName + "/Status", 0),
    ("IBM/IntegrationBus/" + integrationNodeName + "/Status/ExecutionGroup/" + integrationServerName, 0) ,
    ("IBM/IntegrationBus/" + integrationNodeName + "/Statistics/JSON/Archive/" + integrationServerName + "/applications/" + applicationName + "/messageflows/" + messageFlowName, 0)
@@ -180,6 +182,19 @@ def inc_msgflow_data(mqtt_topic, new, old):
    except: 
       logging.error(threading.currentThread().getName() + " Error incrementing values")
 
+def signal_handler(signal, frame):
+   print('You pressed Ctrl+C!')
+   for i in range (len(threads)):
+      threads[i].stop()
+   
+   for i in range (len(threads)):
+      threads[i].join()
+   
+   sys.exit(0)
+   
+signal.signal(signal.SIGINT, signal_handler)
+      
+      
 if __name__ == "__main__":
    logFile = config.get("CONFIG", "logfile")
    enableLogMsg = config.getboolean("CONFIG", "enablelogmsg")
@@ -190,6 +205,10 @@ if __name__ == "__main__":
    jsonFile = config.get("CONFIG", "jsonfile")
    printMsg = config.getboolean("CONFIG", "printmsg")
    brokers_file = config.get("CONFIG", "brokers")
+   
+   if not os.path.isfile(logFile):
+      tmp=open(logFile,"w")
+      tmp.close()
    
    logging.basicConfig(filename=logFile, filemode='a', level=loglvl, datefmt=datetimeFormat, format='%(asctime)s  %(levelname)s: %(message)s')
    logging.info(" --- Starting ---")
@@ -206,12 +225,12 @@ if __name__ == "__main__":
       
       b=brokers[i].split(',')
       
-      t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],b[2]))
+      t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],"clientId"))
       threads.append(t)
       t.start()
    
-   while threading.activeCount() > 1:
-      pass
-   else:
-      logging.info(" --- Exiting ---")
+   for i in range (len(threads)):
+      threads[i].join()
+   
+   logging.info(" --- Exiting ---")
    
