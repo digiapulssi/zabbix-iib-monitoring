@@ -43,8 +43,11 @@ TOPICS= [
 ##### CODE #####
 
 config = ConfigParser.ConfigParser()
+configNI = ConfigParser.ConfigParser(interpolation=None)
 confFile = config.read(configFile)
+configFileNI = configNI.read(configFile)
 conf_sections = config.sections()
+conf_sectionsNI = configNI.sections()
 
 def on_message(client, userdata, message):
 
@@ -133,7 +136,7 @@ def on_unsubscribe(client, userdata, mid):
 def on_disconnect(client, userdata, rc):
 
    if rc != 0:
-      logging.warning(threading.currentThread().getName() + " Unexpected disconnection.")
+      logging.warning(threading.currentThread().getName() + " Unexpected disconnect.")
    else:
       logging.info(threading.currentThread().getName() + " Disconnected")
 
@@ -165,7 +168,7 @@ def inc_msgflow_data(mqtt_topic, new, old):
    except: 
       logging.error(threading.currentThread().getName() + " Error incrementing values")
 
-def thread_MQTT(BROKER_ADDRESS,PORT,id):
+def thread_MQTT(BROKER_ADDRESS,PORT,id,doExit):
    global doExit
    client = mqtt.Client(id) 
    
@@ -194,7 +197,7 @@ if __name__ == "__main__":
    logFile = config.get("CONFIG", "logfile")
    enableLogMsg = config.getboolean("CONFIG", "enablelogmsg")
    loglvl = config.get("CONFIG", "loglevel")
-   datetimeFormat = config.get("CONFIG", "datetimeformat")
+   datetimeFormat = configNI.get("CONFIG", "datetimeformat")
    encoding = config.get("CONFIG", "encoding")
    
    jsonFile = config.get("CONFIG", "jsonfile")
@@ -225,7 +228,7 @@ if __name__ == "__main__":
          
          b=brokers[i].split(',')
          
-         t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],"clientId"))
+         t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],"clientId",doExit))
          threads.append(t)
          t.start()
    
