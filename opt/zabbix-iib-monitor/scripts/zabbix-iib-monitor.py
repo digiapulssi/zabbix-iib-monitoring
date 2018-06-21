@@ -11,8 +11,8 @@ import json
 import time
 import os
 import re
-import signal
-import sys
+#import signal
+#import sys
 
 ##### CONFIG #####
 # path to config file
@@ -139,27 +139,7 @@ def on_disconnect(client, userdata, rc):
 
 def on_log(client, userdata, level, buf):
    logging.info(threading.currentThread().getName() + " Log message: " + str(client) + " " + str(userdata) + " " + str(buf))
-   
-def thread_MQTT(BROKER_ADDRESS,PORT,id, doExit):
-   client = mqtt.Client(id) 
-   
-   client.on_connect = on_connect
-   client.on_message = on_message
-   client.on_subscribe = on_subscribe
-   client.on_unsubscribe = on_unsubscribe
-   client.on_disconnect = on_disconnect
-   
-   if enableLogMsg:
-      client.on_log = on_log
-   
-   logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT + " with id: " + id)
-   client.connect( BROKER_ADDRESS, int(PORT))
-   
-   while not doExit.isSet():
-      client.loop()
-   else:
-      logging.info(threading.currentThread().getName() + " Exited gracefully.")
-   
+
 def inc_msgflow_data(mqtt_topic, new, old):
    try:
    
@@ -185,12 +165,32 @@ def inc_msgflow_data(mqtt_topic, new, old):
    except: 
       logging.error(threading.currentThread().getName() + " Error incrementing values")
 
-def signal_handler(signal, frame):
+def thread_MQTT(BROKER_ADDRESS,PORT,id):
+   global doExit
+   client = mqtt.Client(id) 
    
-   for i in range (len(threads)):
-      threads[i].e.set()
-      
+   client.on_connect = on_connect
+   client.on_message = on_message
+   client.on_subscribe = on_subscribe
+   client.on_unsubscribe = on_unsubscribe
+   client.on_disconnect = on_disconnect
+   
+   if enableLogMsg:
+      client.on_log = on_log
+   
+   logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT)
+   client.connect( BROKER_ADDRESS, int(PORT))
+   
+   try:
+      while not doExit.isSet():
+         client.loop()
+   except KeyboardInterrupt:
+      logging.info(threading.currentThread().getName() + " Exited (gracefullyish).")
+      doExit.set()
+
 if __name__ == "__main__":
+   
+   
    logFile = config.get("CONFIG", "logfile")
    enableLogMsg = config.getboolean("CONFIG", "enablelogmsg")
    loglvl = config.get("CONFIG", "loglevel")
@@ -202,7 +202,7 @@ if __name__ == "__main__":
    brokers_file = config.get("CONFIG", "brokers")
    
    # this == if SIGINT recieved run signal_handler?
-   signal.signal(signal.SIGINT, signal_handler)
+   #signal.signal(signal.SIGINT, signal_handler)
    
    if not os.path.isfile(logFile):
       tmp=open(logFile,"w")
@@ -211,22 +211,28 @@ if __name__ == "__main__":
    logging.basicConfig(filename=logFile, filemode='a', level=loglvl, datefmt=datetimeFormat, format='%(asctime)s  %(levelname)s: %(message)s')
    logging.info(" --- Starting ---")
    
-   broker_list=open(brokers_file, 'r')
-   brokers = broker_list.readlines()
-   broker_list.close()
+   try:
+      broker_list=open(brokers_file, 'r')
+      brokers = broker_list.readlines()
+      broker_list.close()
+      
+      doExit = threading.Event()
+      lock = threading.Lock()
+      threads = []
+      for i in range (len(brokers)):
+         if brokers[i].strip() == "" or brokers[i].lstrip()[0] == '#':
+            continue
+         
+         b=brokers[i].split(',')
+         
+         t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],"clientId"))
+         threads.append(t)
+         t.start()
    
-   lock = threading.Lock()
-   threads = []
-   for i in range (len(brokers)):
-      if brokers[i].strip() == "" or brokers[i].lstrip()[0] == '#':
-         continue
+   except KeyboardInterrupt:
+      logging.info(" --- Exiting ---")
+      doExit.set()
       
-      b=brokers[i].split(',')
-      
-      e = threading.Event()
-      t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],"clientId",e))
-      threads.append(t)
-      t.start()
    
    for i in range (len(threads)):
       threads[i].join()
