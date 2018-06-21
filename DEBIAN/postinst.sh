@@ -1,6 +1,6 @@
 !#/bin/bash
 
-virtualenv /opt/zabbix-iib-monitoring/virtualenv
+virtualenv /opt/zabbix-iib-monitor/virtualenv
 
 . /opt/zabbix-iib-monitoring/virtualenv/bin/activate
 
