@@ -22,8 +22,6 @@ These scripts do **not require** to be installed locally with IBM Integration Bu
 
 For Ubuntu: 
 
-```apt install virtualenv```
-
 ```apt-get install python-pip``` or ```apt-get install python3-pip```
 
 ### Install virtualenv
@@ -162,6 +160,6 @@ If it did, everything should be ready for adding discovery rules and items to Za
 ### Add prototype items
    - For rule "iib.mqtt_topic.discovery[node]" use key "iib.node.status[{#TOPIC}]" to get updates on node status
    - For rule "iib.mqtt_topic.discovery[server]" use key "iib.server.status[{#TOPIC}]" to get updates on server status
-   - For rule "iib.mqtt_topic.discovery[messageflow]" use key "iib.messageflow[{#TOPIC}, *dataFieldName*]" where *dataFieldName* is the json field name (Leave parameter empty and set "Type of information" to "text" to see all available fields)
+   - For rule "iib.mqtt_topic.discovery[messageflow]" use key "iib.messageflow[{#TOPIC}, *dataFieldName*]" where *dataFieldName* is the json field name. Leave *dataFieldName* parameter empty and set "Type of information" to "text" to see all available fields. A description for all fields can be found here: https://www.ibm.com/support/knowledgecenter/en/SSRLD6_7.3.0/kqi_userguide/attr_kqitacmf.html
 
 
