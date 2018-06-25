@@ -4,7 +4,7 @@
 virtualenv /opt/zabbix-iib-monitor/virtualenv
 
 # activate virtualenv
-. /opt/zabbix-iib-monitoring/virtualenv/bin/activate
+. /opt/zabbix-iib-monitor/virtualenv/bin/activate
 
 # install required packages to virtualenv
 pip install xmljson ConfigParser six paho-mqtt
