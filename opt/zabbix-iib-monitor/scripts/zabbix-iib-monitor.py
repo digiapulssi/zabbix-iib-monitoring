@@ -43,11 +43,11 @@ TOPICS= [
 ##### CODE #####
 
 config = ConfigParser.ConfigParser()
-configNI = ConfigParser.ConfigParser(interpolation=None)
+configRaw = ConfigParser.RawConfigParser()
 confFile = config.read(configFile)
-configFileNI = configNI.read(configFile)
+configFileRaw = configRaw.read(configFile)
 conf_sections = config.sections()
-conf_sectionsNI = configNI.sections()
+conf_sectionsRaw = configRaw.sections()
 
 def on_message(client, userdata, message):
 
@@ -123,7 +123,7 @@ def on_connect(client, userdata, flags, rc):
       "Connection refused - bad username or password",
       "Connection refused - not authorised"
    ]
-   
+   connected = True
    logging.info(threading.currentThread().getName() + " " + conn_codes[rc] + ". (code " + str(rc) + ")")
    client.subscribe(TOPICS)
 
@@ -139,6 +139,8 @@ def on_disconnect(client, userdata, rc):
       logging.warning(threading.currentThread().getName() + " Unexpected disconnect.")
    else:
       logging.info(threading.currentThread().getName() + " Disconnected")
+   
+   connected = False
 
 def on_log(client, userdata, level, buf):
    logging.info(threading.currentThread().getName() + " Log message: " + str(client) + " " + str(userdata) + " " + str(buf))
@@ -177,6 +179,8 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
    client.on_unsubscribe = on_unsubscribe
    client.on_disconnect = on_disconnect
    
+   connected = False
+   
    if enableLogMsg:
       client.on_log = on_log
    
@@ -184,6 +188,8 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
    client.connect( BROKER_ADDRESS, int(PORT))
    
    while not stop():
+      if not connected:
+         client.reconnect()
       client.loop()
       
    client.disconnect()
@@ -195,7 +201,7 @@ if __name__ == "__main__":
    logFile = config.get("CONFIG", "logfile")
    enableLogMsg = config.getboolean("CONFIG", "enablelogmsg")
    loglvl = config.get("CONFIG", "loglevel")
-   datetimeFormat = configNI.get("CONFIG", "datetimeformat")
+   datetimeFormat = configRaw.get("CONFIG", "datetimeformat")
    encoding = config.get("CONFIG", "encoding")
    
    jsonFile = config.get("CONFIG", "jsonfile")
