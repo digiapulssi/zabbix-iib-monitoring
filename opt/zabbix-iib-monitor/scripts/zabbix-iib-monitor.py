@@ -169,7 +169,6 @@ def inc_msgflow_data(mqtt_topic, new, old):
       logging.error(threading.currentThread().getName() + " Error incrementing values")
 
 def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
-   #global doExit
    client = mqtt.Client(id) 
    
    client.on_connect = on_connect
@@ -184,14 +183,13 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
    logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT)
    client.connect( BROKER_ADDRESS, int(PORT))
    
-   while not stop:
+   while not stop():
       client.loop()
-   
-   logging.info(threading.currentThread().getName() + " Exited (gracefullyish).")
       
-#def signal_handler():
+   client.disconnect()
    
-
+   logging.info(threading.currentThread().getName() + " Stopped")
+      
 if __name__ == "__main__":
    
    logFile = config.get("CONFIG", "logfile")
@@ -204,15 +202,12 @@ if __name__ == "__main__":
    printMsg = config.getboolean("CONFIG", "printmsg")
    brokers_file = config.get("CONFIG", "brokers")
    
-   # this == if SIGINT recieved run signal_handler?
-   #signal.signal(signal.SIGINT, signal_handler)
-   
    if not os.path.isfile(logFile):
       tmp=open(logFile,"w")
       tmp.close()
    
    logging.basicConfig(filename=logFile, filemode='a', level=loglvl, datefmt=datetimeFormat, format='%(asctime)s  %(levelname)s: %(message)s')
-   logging.info(" --- Starting ---")
+   logging.info(" --- Main thread starting ---")
    
    try:
       broker_list=open(brokers_file, 'r')
@@ -220,7 +215,6 @@ if __name__ == "__main__":
       broker_list.close()
       
       doExit = False
-      #e = threading.Event()
       lock = threading.Lock()
       threads = []
       for i in range (len(brokers)):
@@ -229,7 +223,7 @@ if __name__ == "__main__":
          
          b=brokers[i].split(',')
          
-         t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],"clientId",lambda: doExit))
+         t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],"clientId", lambda: doExit))
          threads.append(t)
          t.start()
          
@@ -238,14 +232,10 @@ if __name__ == "__main__":
          pass
          
    except (KeyboardInterrupt, SystemExit):
-      logging.info(" --- Exiting, exception ---")
       doExit = True
-      #doExit.set()
-   
-   
    
    for thread in threads:
       thread.join()
    
-   logging.info(" --- Exiting ---")
+   logging.info(" --- Main thread stopped ---")
    
