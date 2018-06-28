@@ -168,8 +168,8 @@ def inc_msgflow_data(mqtt_topic, new, old):
    except: 
       logging.error(threading.currentThread().getName() + " Error incrementing values")
 
-def thread_MQTT(BROKER_ADDRESS,PORT,id,doExit):
-   global doExit
+def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
+   #global doExit
    client = mqtt.Client(id) 
    
    client.on_connect = on_connect
@@ -184,15 +184,15 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id,doExit):
    logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT)
    client.connect( BROKER_ADDRESS, int(PORT))
    
-   try:
-      while not doExit.isSet():
-         client.loop()
-   except KeyboardInterrupt:
-      logging.info(threading.currentThread().getName() + " Exited (gracefullyish).")
-      doExit.set()
+   while not stop:
+      client.loop()
+   
+   logging.info(threading.currentThread().getName() + " Exited (gracefullyish).")
+      
+#def signal_handler():
+   
 
 if __name__ == "__main__":
-   
    
    logFile = config.get("CONFIG", "logfile")
    enableLogMsg = config.getboolean("CONFIG", "enablelogmsg")
@@ -219,7 +219,8 @@ if __name__ == "__main__":
       brokers = broker_list.readlines()
       broker_list.close()
       
-      doExit = threading.Event()
+      doExit = False
+      #e = threading.Event()
       lock = threading.Lock()
       threads = []
       for i in range (len(brokers)):
@@ -228,17 +229,23 @@ if __name__ == "__main__":
          
          b=brokers[i].split(',')
          
-         t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],"clientId",doExit))
+         t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],"clientId",lambda: doExit))
          threads.append(t)
          t.start()
+         
+      while not doExit:
+         time.sleep(0.01)
+         pass
+         
+   except (KeyboardInterrupt, SystemExit):
+      logging.info(" --- Exiting, exception ---")
+      doExit = True
+      #doExit.set()
    
-   except KeyboardInterrupt:
-      logging.info(" --- Exiting ---")
-      doExit.set()
-      
    
-   for i in range (len(threads)):
-      threads[i].join()
+   
+   for thread in threads:
+      thread.join()
    
    logging.info(" --- Exiting ---")
    
