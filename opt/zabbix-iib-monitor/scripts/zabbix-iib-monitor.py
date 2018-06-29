@@ -140,9 +140,7 @@ def on_disconnect(client, userdata, rc):
    if rc != 0:
       logging.warning(threading.currentThread().getName() + " Unexpected disconnect")
       logging.info(threading.currentThread().getName() + " Reconnecting...")
-      while True:
-         client.reconnect()
-         time.sleep(30)
+      client.reconnect()
    else:
       logging.info(threading.currentThread().getName() + " Disconnected")
 
@@ -183,6 +181,8 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
       client.on_subscribe = on_subscribe
       client.on_unsubscribe = on_unsubscribe
       client.on_disconnect = on_disconnect
+      
+      client.reconnect_delay_set(10, 60)
       
       if enableLogMsg:
          client.on_log = on_log
