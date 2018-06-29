@@ -11,6 +11,8 @@ import json
 import time
 import os
 import re
+import errno
+from socket import error as socket_error
 #import signal
 #import sys
 
@@ -196,15 +198,17 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
       logging.info(threading.currentThread().getName() + " Stopped")
    
    except socket_error as serr:
-      if serr.errno != errno.ECONNREFUSED:
-         # Not the error we are looking for, re-raise
+      if serr.errno == errno.ECONNRESET:
+         logging.warning(threading.currentThread().getName() + " Connection reset")
+         logging.info(threading.currentThread().getName() + " Reconnecting...")
+         client.reconnect()
+      elif serr.errno == errno.ECONNREFUSED:
+         logging.warning(threading.currentThread().getName() + " Connection refused")
+         logging.info(threading.currentThread().getName() + " Reconnecting...")
+         client.reconnect()
+      else:
          raise serr
          
-      # connection refused
-      logging.warning(threading.currentThread().getName() + " Connection refused")
-      #logging.info(threading.currentThread().getName() + " Reconnecting...")
-      #client.reconnect()
-      
 if __name__ == "__main__":
    
    logFile = config.get("CONFIG", "logfile")
