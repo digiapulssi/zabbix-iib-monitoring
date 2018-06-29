@@ -123,7 +123,7 @@ def on_connect(client, userdata, flags, rc):
       "Connection refused - bad username or password",
       "Connection refused - not authorised"
    ]
-   connected = True
+   
    logging.info(threading.currentThread().getName() + " " + conn_codes[rc] + ". (code " + str(rc) + ")")
    client.subscribe(TOPICS)
 
@@ -136,11 +136,13 @@ def on_unsubscribe(client, userdata, mid):
 def on_disconnect(client, userdata, rc):
 
    if rc != 0:
-      logging.warning(threading.currentThread().getName() + " Unexpected disconnect.")
+      logging.warning(threading.currentThread().getName() + " Unexpected disconnect")
+      logging.info(threading.currentThread().getName() + " Reconnecting...")
+      while True:
+         client.reconnect()
+         time.sleep(30)
    else:
       logging.info(threading.currentThread().getName() + " Disconnected")
-   
-   connected = False
 
 def on_log(client, userdata, level, buf):
    logging.info(threading.currentThread().getName() + " Log message: " + str(client) + " " + str(userdata) + " " + str(buf))
@@ -171,30 +173,37 @@ def inc_msgflow_data(mqtt_topic, new, old):
       logging.error(threading.currentThread().getName() + " Error incrementing values")
 
 def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
-   client = mqtt.Client(id) 
-   
-   client.on_connect = on_connect
-   client.on_message = on_message
-   client.on_subscribe = on_subscribe
-   client.on_unsubscribe = on_unsubscribe
-   client.on_disconnect = on_disconnect
-   
-   connected = False
-   
-   if enableLogMsg:
-      client.on_log = on_log
-   
-   logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT)
-   client.connect( BROKER_ADDRESS, int(PORT))
-   
-   while not stop():
-      if not connected:
-         client.reconnect()
-      client.loop()
+   try:
+      client = mqtt.Client(id) 
       
-   client.disconnect()
+      client.on_connect = on_connect
+      client.on_message = on_message
+      client.on_subscribe = on_subscribe
+      client.on_unsubscribe = on_unsubscribe
+      client.on_disconnect = on_disconnect
+      
+      if enableLogMsg:
+         client.on_log = on_log
+      
+      logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT)
+      client.connect( BROKER_ADDRESS, int(PORT))
+      
+      while not stop():
+         client.loop()
+         
+      client.disconnect()
+      
+      logging.info(threading.currentThread().getName() + " Stopped")
    
-   logging.info(threading.currentThread().getName() + " Stopped")
+   except socket_error as serr:
+      if serr.errno != errno.ECONNREFUSED:
+         # Not the error we are looking for, re-raise
+         raise serr
+         
+      # connection refused
+      logging.warning(threading.currentThread().getName() + " Connection refused")
+      #logging.info(threading.currentThread().getName() + " Reconnecting...")
+      #client.reconnect()
       
 if __name__ == "__main__":
    
