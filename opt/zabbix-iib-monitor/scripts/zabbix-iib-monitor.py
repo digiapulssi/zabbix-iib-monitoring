@@ -3,6 +3,7 @@
 from xmljson import abdera as ab
 from xml.etree.ElementTree import fromstring
 from six.moves import configparser as ConfigParser
+from socket import error as socket_error
 import paho.mqtt.client as mqtt
 import threading
 import logging
@@ -12,9 +13,8 @@ import time
 import os
 import re
 import errno
-from socket import error as socket_error
-#import signal
-#import sys
+
+import sys
 
 ##### CONFIG #####
 # path to config file
@@ -142,15 +142,12 @@ def on_disconnect(client, userdata, rc):
    if rc != 0:
       connected = False
       logging.warning(threading.currentThread().getName() + " Unexpected disconnect")
-      # logging.info(threading.currentThread().getName() + " Reconnecting...")
-      # while not connected:
-         # client.reconnect()
    else:
       logging.info(threading.currentThread().getName() + " Disconnected")
       connected = False
 
 def on_log(client, userdata, level, buf):
-   logging.info(threading.currentThread().getName() + " Log message: " + str(client) + " " + str(userdata) + " " + str(buf))
+   logging.debug(threading.currentThread().getName() + " Log message: " + str(client) + " " + str(userdata) + " " + str(buf))
 
 def inc_msgflow_data(mqtt_topic, new, old):
    try:
@@ -178,9 +175,6 @@ def inc_msgflow_data(mqtt_topic, new, old):
       logging.error(threading.currentThread().getName() + " Error incrementing values")
 
 def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
-   global connected
-   connected = False
-   
    try:
       client = mqtt.Client(id) 
       
@@ -198,33 +192,28 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
       logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT)
       client.connect( BROKER_ADDRESS, int(PORT))
       
+      client.loop_start()
+      
       while not stop():
-         client.loop_start()
-         client.loop_stop()
+         time.sleep(0.01)
+         pass
          
       client.disconnect()
+      client.loop_stop()
       
       logging.info(threading.currentThread().getName() + " Stopped")
    
    except socket_error as serr:
       if serr.errno == errno.ECONNRESET:
          logging.warning(threading.currentThread().getName() + " Connection reset")
-         # while not connected:
-            # logging.info(threading.currentThread().getName() + " Reconnecting...")
-            # client.reconnect()
-            # time.sleep(10)
       elif serr.errno == errno.ECONNREFUSED:
          logging.error(threading.currentThread().getName() + " Connection refused")
-         # while not connected:
-            # logging.info(threading.currentThread().getName() + " Reconnecting...")
-            # client.reconnect()
-            # time.sleep(10)
       elif serr.errno == errno.EHOSTUNREACH:
          logging.error(threading.currentThread().getName() + " No route to host")
          
       else:
          logging.error(threading.currentThread().getName() + " " + str(serr))
-         #raise serr
+         raise serr
          
 if __name__ == "__main__":
    
@@ -259,7 +248,7 @@ if __name__ == "__main__":
          
          b=brokers[i].split(',')
          
-         t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],"clientId", lambda: doExit))
+         t = threading.Thread(name="MQTT-Client", target = thread_MQTT, args = (b[0],b[1],"clientId", lambda: doExit))
          threads.append(t)
          t.start()
          
