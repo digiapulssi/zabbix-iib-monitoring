@@ -242,13 +242,15 @@ if __name__ == "__main__":
       doExit = False
       lock = threading.Lock()
       threads = []
+      count = 1
       for i in range (len(brokers)):
          if brokers[i].strip() == "" or brokers[i].lstrip()[0] == '#':
             continue
          
          b=brokers[i].split(',')
          
-         t = threading.Thread(name="MQTT-Client", target = thread_MQTT, args = (b[0],b[1],"clientId", lambda: doExit))
+         t = threading.Thread(name="MQTT-Client-" + str(count), target = thread_MQTT, args = (b[0],b[1],"clientId", lambda: doExit))
+         count = count + 1
          threads.append(t)
          t.start()
          
