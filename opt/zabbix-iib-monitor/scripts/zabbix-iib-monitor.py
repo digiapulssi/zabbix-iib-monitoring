@@ -125,6 +125,7 @@ def on_connect(client, userdata, flags, rc):
       "Connection refused - bad username or password",
       "Connection refused - not authorised"
    ]
+   global connected
    connected = True
    logging.info(threading.currentThread().getName() + " " + conn_codes[rc] + ". (code " + str(rc) + ")")
    client.subscribe(TOPICS)
@@ -136,14 +137,14 @@ def on_unsubscribe(client, userdata, mid):
    logging.info(threading.currentThread().getName() + " Unsubscribed from topic")
 
 def on_disconnect(client, userdata, rc):
+   global connected
 
    if rc != 0:
       connected = False
       logging.warning(threading.currentThread().getName() + " Unexpected disconnect")
-      logging.info(threading.currentThread().getName() + " Reconnecting...")
-      while not connected
-         client.reconnect()
-         time.sleep(10)
+      # logging.info(threading.currentThread().getName() + " Reconnecting...")
+      # while not connected:
+         # client.reconnect()
    else:
       logging.info(threading.currentThread().getName() + " Disconnected")
       connected = False
@@ -177,6 +178,7 @@ def inc_msgflow_data(mqtt_topic, new, old):
       logging.error(threading.currentThread().getName() + " Error incrementing values")
 
 def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
+   global connected
    connected = False
    
    try:
@@ -197,7 +199,8 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
       client.connect( BROKER_ADDRESS, int(PORT))
       
       while not stop():
-         client.loop()
+         client.loop_start()
+         client.loop_stop()
          
       client.disconnect()
       
@@ -206,21 +209,22 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
    except socket_error as serr:
       if serr.errno == errno.ECONNRESET:
          logging.warning(threading.currentThread().getName() + " Connection reset")
-         while not connected
-            logging.info(threading.currentThread().getName() + " Reconnecting...")
-            client.reconnect()
-            time.sleep(10)
+         # while not connected:
+            # logging.info(threading.currentThread().getName() + " Reconnecting...")
+            # client.reconnect()
+            # time.sleep(10)
       elif serr.errno == errno.ECONNREFUSED:
          logging.error(threading.currentThread().getName() + " Connection refused")
-         while not connected
-            logging.info(threading.currentThread().getName() + " Reconnecting...")
-            client.reconnect()
-            time.sleep(10)
+         # while not connected:
+            # logging.info(threading.currentThread().getName() + " Reconnecting...")
+            # client.reconnect()
+            # time.sleep(10)
       elif serr.errno == errno.EHOSTUNREACH:
          logging.error(threading.currentThread().getName() + " No route to host")
          
       else:
-         raise serr
+         logging.error(threading.currentThread().getName() + " " + str(serr))
+         #raise serr
          
 if __name__ == "__main__":
    
