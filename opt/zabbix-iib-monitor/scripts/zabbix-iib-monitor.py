@@ -125,8 +125,6 @@ def on_connect(client, userdata, flags, rc):
       "Connection refused - bad username or password",
       "Connection refused - not authorised"
    ]
-   global connected
-   connected = True
    logging.info(threading.currentThread().getName() + " " + conn_codes[rc] + ". (code " + str(rc) + ")")
    client.subscribe(TOPICS)
 
@@ -137,14 +135,10 @@ def on_unsubscribe(client, userdata, mid):
    logging.info(threading.currentThread().getName() + " Unsubscribed from topic")
 
 def on_disconnect(client, userdata, rc):
-   global connected
-
    if rc != 0:
-      connected = False
       logging.warning(threading.currentThread().getName() + " Unexpected disconnect")
    else:
       logging.info(threading.currentThread().getName() + " Disconnected")
-      connected = False
 
 def on_log(client, userdata, level, buf):
    logging.debug(threading.currentThread().getName() + " Log message: " + str(client) + " " + str(userdata) + " " + str(buf))
