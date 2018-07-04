@@ -168,6 +168,19 @@ def inc_msgflow_data(mqtt_topic, new, old):
    except: 
       logging.error(threading.currentThread().getName() + " Error incrementing values")
 
+def loop_start(self):
+   """This is part of the threaded client interface. Call this once to
+   start a new thread to process network traffic. This provides an
+   alternative to repeatedly calling loop() yourself.
+   """
+   if self._thread is not None:
+       return MQTT_ERR_INVAL
+
+   self._thread_terminate = False
+   self._thread = threading.Thread(target=self._thread_main)
+   self._thread.daemon = True
+   self._thread.start()
+
 def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
    try:
       client = mqtt.Client(id) 
