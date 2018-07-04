@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 
 # create virtualenv for zabbix-iib-monitor
 virtualenv /opt/zabbix-iib-monitor/virtualenv
