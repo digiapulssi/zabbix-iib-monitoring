@@ -7,9 +7,8 @@ Priority: optional
 Architecture: amd64
 Depends: python (>= 2.7),dh-python,python-setuptools,virtualenv
 Description: Scripts for monitoring IBM Integration Bus with Zabbix
- Scripts for monitoring IBM Integration Bus with Zabbix, 
- using IBM Integration Bus MQTT messages. 
- A python script is used to receive MQTT messages. 
+ Monitoring is implemented with a python script that listens for MQTT messages,
+ sent by IBM integration Bus.
  Received messages are written to disk (Default: /tmp/zabbix-iib-monitor.json),
  from where a Zabbix agent polls the required data to Zabbix.
  
