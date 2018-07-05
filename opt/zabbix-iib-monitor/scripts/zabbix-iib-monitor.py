@@ -182,16 +182,12 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
    try:
       client = mqtt.Client(id) 
       
-      
-      client.loop_start = types.MethodType(loop_start, client)
-      
       client.on_connect = on_connect
       client.on_message = on_message
       client.on_subscribe = on_subscribe 
       client.on_unsubscribe = on_unsubscribe
       client.on_disconnect = on_disconnect
-      
-      client.reconnect_delay_set(10, 60)
+      client.loop_start = types.MethodType(loop_start, client)
       
       if enableLogMsg:
          client.on_log = on_log
