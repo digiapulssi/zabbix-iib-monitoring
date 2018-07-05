@@ -1,9 +1,9 @@
 Package: zabbix-iib-monitor
 Version: 1.0.0
-Maintainer: peter.jokinen@digia.com
+Maintainer: Peter Jokinen <peter.jokinen@digia.com>
 Homepage: https://github.com/digiapulssi/zabbix-iib-monitoring
 Section: base
 Priority: optional
 Architecture: amd64
-Depends: dh-python,python-all,python-setuptools,virtualenv
+Depends: python (>= 2.7),dh-python,python-setuptools,virtualenv
 Description: Scripts for monitoring IBM Integration Bus with Zabbix

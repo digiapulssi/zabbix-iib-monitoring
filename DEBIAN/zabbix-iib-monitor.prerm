@@ -1,4 +1,7 @@
 #!/bin/bash
+set -e
 
 # remove virtualenv
 rm -r /opt/zabbix-iib-monitor/virtualenv
+
+exit 0

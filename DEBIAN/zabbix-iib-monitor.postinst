@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # create virtualenv for zabbix-iib-monitor
 virtualenv /opt/zabbix-iib-monitor/virtualenv
@@ -11,3 +12,5 @@ pip install xmljson ConfigParser six paho-mqtt
 
 # deactivate virtualenv
 deactivate
+
+exit 0
