@@ -13,7 +13,7 @@ import time
 import os
 import re
 import errno
-
+import types
 import sys
 
 ##### CONFIG #####
@@ -168,22 +168,22 @@ def inc_msgflow_data(mqtt_topic, new, old):
    except: 
       logging.error(threading.currentThread().getName() + " Error incrementing values")
 
+# redefined paho.mqtt.client.loop_start() to add Thread name
 def loop_start(self):
-   """This is part of the threaded client interface. Call this once to
-   start a new thread to process network traffic. This provides an
-   alternative to repeatedly calling loop() yourself.
-   """
    if self._thread is not None:
-       return MQTT_ERR_INVAL
+      return MQTT_ERR_INVAL
 
    self._thread_terminate = False
-   self._thread = threading.Thread(target=self._thread_main)
+   self._thread = threading.Thread(name=threading.currentThread().getName(),target=self._thread_main)
    self._thread.daemon = True
-   self._thread.start()
-
+   self._thread.start()  
+      
 def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
    try:
       client = mqtt.Client(id) 
+      
+      
+      client.loop_start = types.MethodType(loop_start, client)
       
       client.on_connect = on_connect
       client.on_message = on_message
@@ -221,7 +221,7 @@ def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
       else:
          logging.error(threading.currentThread().getName() + " " + str(serr))
          raise serr
-         
+
 if __name__ == "__main__":
    
    logFile = config.get("CONFIG", "logfile")
