@@ -2,8 +2,11 @@ Package: zabbix-iib-monitor
 Version: 1.0.0
 Maintainer: Peter Jokinen <peter.jokinen@digia.com>
 Homepage: https://github.com/digiapulssi/zabbix-iib-monitoring
-Section: base
+Section: python
 Priority: optional
 Architecture: amd64
 Depends: python (>= 2.7),dh-python,python-setuptools,virtualenv
 Description: Scripts for monitoring IBM Integration Bus with Zabbix
+ Scripts for monitoring IBM Integration Bus with Zabbix, using IBM Integration Bus MQTT messages. 
+ A python script is used to recieve MQTT messages. 
+ Recieved messages are writen to disk (Deafult: /tmp/zabbix-iib-monitor.json), from where a Zabbix agent polls the required data to Zabbix.
