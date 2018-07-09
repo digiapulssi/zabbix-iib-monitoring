@@ -1,0 +1,5 @@
+/etc/zabbix/scripts/iib.messageflow.sh
+/etc/zabbix/scripts/iib.mqtt_topic.discovery.sh
+/etc/zabbix/scripts/iib.node.status.sh
+/etc/zabbix/scripts/iib.server.status.sh
+/etc/zabbix/zabbix_agentd.d/iib.conf

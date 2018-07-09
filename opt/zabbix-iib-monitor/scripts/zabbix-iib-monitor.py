@@ -1,8 +1,9 @@
-#!/opt/zabbix-iib-monitoring/virtualenv/bin/python
+#!/opt/zabbix-iib-monitor/virtualenv/bin/python
 
 from xmljson import abdera as ab
 from xml.etree.ElementTree import fromstring
 from six.moves import configparser as ConfigParser
+from socket import error as socket_error
 import paho.mqtt.client as mqtt
 import threading
 import logging
@@ -11,10 +12,12 @@ import json
 import time
 import os
 import re
+import errno
+import types
 
 ##### CONFIG #####
 # path to config file
-configFile = "/opt/zabbix-iib-monitoring/scripts/zabbix-iib-monitor.ini"
+configFile = "/opt/zabbix-iib-monitor/scripts/zabbix-iib-monitor.ini"
 
 ##### TOPICS #####
 #
@@ -32,7 +35,7 @@ messageFlowName = "+"
 
 # Topics that will be subscribed to
 # format: ("topic", QoS)
-TOPICS= [                           
+TOPICS= [ 
    ("IBM/IntegrationBus/" + integrationNodeName + "/Status", 0),
    ("IBM/IntegrationBus/" + integrationNodeName + "/Status/ExecutionGroup/" + integrationServerName, 0) ,
    ("IBM/IntegrationBus/" + integrationNodeName + "/Statistics/JSON/Archive/" + integrationServerName + "/applications/" + applicationName + "/messageflows/" + messageFlowName, 0)
@@ -41,8 +44,11 @@ TOPICS= [
 ##### CODE #####
 
 config = ConfigParser.ConfigParser()
+configRaw = ConfigParser.RawConfigParser()
 confFile = config.read(configFile)
+configFileRaw = configRaw.read(configFile)
 conf_sections = config.sections()
+conf_sectionsRaw = configRaw.sections()
 
 def on_message(client, userdata, message):
 
@@ -118,7 +124,6 @@ def on_connect(client, userdata, flags, rc):
       "Connection refused - bad username or password",
       "Connection refused - not authorised"
    ]
-   
    logging.info(threading.currentThread().getName() + " " + conn_codes[rc] + ". (code " + str(rc) + ")")
    client.subscribe(TOPICS)
 
@@ -129,32 +134,14 @@ def on_unsubscribe(client, userdata, mid):
    logging.info(threading.currentThread().getName() + " Unsubscribed from topic")
 
 def on_disconnect(client, userdata, rc):
-
    if rc != 0:
-      logging.warning(threading.currentThread().getName() + " Unexpected disconnection.")
+      logging.warning(threading.currentThread().getName() + " Unexpected disconnect")
    else:
       logging.info(threading.currentThread().getName() + " Disconnected")
 
 def on_log(client, userdata, level, buf):
-   logging.info(threading.currentThread().getName() + " Log message: " + str(client) + " " + str(userdata) + " " + str(buf))
-   
-def thread_MQTT(BROKER_ADDRESS,PORT,id):
-   client = mqtt.Client(id) 
-   
-   client.on_connect = on_connect
-   client.on_message = on_message
-   client.on_subscribe = on_subscribe
-   client.on_unsubscribe = on_unsubscribe
-   client.on_disconnect = on_disconnect
-   
-   if enableLogMsg:
-      client.on_log = on_log
-   
-   logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT + " with id: " + id)
-   client.connect( BROKER_ADDRESS, int(PORT))
-   
-   client.loop_forever()
-   
+   logging.debug(threading.currentThread().getName() + " Log message: " + str(client) + " " + str(userdata) + " " + str(buf))
+
 def inc_msgflow_data(mqtt_topic, new, old):
    try:
    
@@ -180,38 +167,104 @@ def inc_msgflow_data(mqtt_topic, new, old):
    except: 
       logging.error(threading.currentThread().getName() + " Error incrementing values")
 
+# redefined paho.mqtt.client.loop_start() to add Thread name
+def loop_start(self):
+   if self._thread is not None:
+      return MQTT_ERR_INVAL
+
+   self._thread_terminate = False
+   self._thread = threading.Thread(name=threading.currentThread().getName(),target=self._thread_main)
+   self._thread.daemon = True
+   self._thread.start()  
+      
+def thread_MQTT(BROKER_ADDRESS,PORT,id,stop):
+   try:
+      client = mqtt.Client(id) 
+      
+      client.on_connect = on_connect
+      client.on_message = on_message
+      client.on_subscribe = on_subscribe 
+      client.on_unsubscribe = on_unsubscribe
+      client.on_disconnect = on_disconnect
+      client.loop_start = types.MethodType(loop_start, client)
+      
+      if enableLogMsg:
+         client.on_log = on_log
+      
+      logging.info(threading.currentThread().getName() + " Connecting to broker: " + BROKER_ADDRESS + ":" + PORT)
+      client.connect( BROKER_ADDRESS, int(PORT))
+      
+      client.loop_start()
+      
+      while not stop():
+         time.sleep(0.01)
+         pass
+         
+      client.disconnect()
+      client.loop_stop()
+      
+      logging.info(threading.currentThread().getName() + " Stopped")
+   
+   except socket_error as serr:
+      if serr.errno == errno.ECONNRESET:
+         logging.warning(threading.currentThread().getName() + " Connection reset")
+      elif serr.errno == errno.ECONNREFUSED:
+         logging.error(threading.currentThread().getName() + " Connection refused")
+      elif serr.errno == errno.EHOSTUNREACH:
+         logging.error(threading.currentThread().getName() + " No route to host")
+         
+      else:
+         logging.error(threading.currentThread().getName() + " " + str(serr))
+         raise serr
+
 if __name__ == "__main__":
+   
    logFile = config.get("CONFIG", "logfile")
    enableLogMsg = config.getboolean("CONFIG", "enablelogmsg")
    loglvl = config.get("CONFIG", "loglevel")
-   datetimeFormat = config.get("CONFIG", "datetimeformat")
+   datetimeFormat = configRaw.get("CONFIG", "datetimeformat")
    encoding = config.get("CONFIG", "encoding")
    
    jsonFile = config.get("CONFIG", "jsonfile")
    printMsg = config.getboolean("CONFIG", "printmsg")
    brokers_file = config.get("CONFIG", "brokers")
    
+   if not os.path.isfile(logFile):
+      tmp=open(logFile,"w")
+      tmp.close()
+   
    logging.basicConfig(filename=logFile, filemode='a', level=loglvl, datefmt=datetimeFormat, format='%(asctime)s  %(levelname)s: %(message)s')
-   logging.info(" --- Starting ---")
+   logging.info(" --- Main thread starting ---")
    
-   broker_list=open(brokers_file, 'r')
-   brokers = broker_list.readlines()
-   broker_list.close()
-   
-   lock = threading.Lock()
-   threads = []
-   for i in range (len(brokers)):
-      if brokers[i].strip() == "" or brokers[i].lstrip()[0] == '#':
-         continue
+   try:
+      broker_list=open(brokers_file, 'r')
+      brokers = broker_list.readlines()
+      broker_list.close()
       
-      b=brokers[i].split(',')
-      
-      t = threading.Thread(target = thread_MQTT, args = (b[0],b[1],"clientId"))
-      threads.append(t)
-      t.start()
+      doExit = False
+      lock = threading.Lock()
+      threads = []
+      count = 1
+      for i in range (len(brokers)):
+         if brokers[i].strip() == "" or brokers[i].lstrip()[0] == '#':
+            continue
+         
+         b=brokers[i].split(',')
+         
+         t = threading.Thread(name="MQTT-Client-" + str(count), target = thread_MQTT, args = (b[0],b[1],"clientId", lambda: doExit))
+         count = count + 1
+         threads.append(t)
+         t.start()
+         
+      while not doExit:
+         time.sleep(0.01)
+         pass
+         
+   except (KeyboardInterrupt, SystemExit):
+      doExit = True
    
-   for i in range (len(threads)):
-      threads[i].join()
+   for thread in threads:
+      thread.join()
    
-   logging.info(" --- Exiting ---")
+   logging.info(" --- Main thread stopped ---")
    

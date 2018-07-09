@@ -4,102 +4,23 @@ This project contains scripts for listening to IBM Integration Bus MQTT messages
 
 These scripts do **not require** to be installed locally with IBM Integration Bus, although you will need to change the bind address of each integration node you want to monitor from the outside. Bind address can be found in a file at C:\ProgramData\IBM\MQSI\components\nodeName\config\nodeName
 
-## Installation
+## Installation (Ubuntu/Debian)
 
 ### Switch to root user
 
 ```sudo su```
 
-### Download files from GitHub
+### Download latest release from https://github.com/digiapulssi/zabbix-iib-monitoring/releases
 
-```curl -LJO https://github.com/digiapulssi/zabbix-iib-monitoring/archive/master.tar.gz```
+```curl -LJO <URL to latest release>```
 
-### Unzip downloaded files
+### Install the downloaded package 
 
-```tar zxvf zabbix-iib-monitoring-master.tar.gz```
+```apt install ./<downloaded-package>.deb```
 
-### Install pip (for python v2) or pip3 (for python v3)
+### Reload services
 
-For Ubuntu: 
-
-```apt install virtualenv```
-
-```apt-get install python-pip``` or ```apt-get install python3-pip```
-
-### Install virtualenv
-
-Ubuntu: 
-
-```apt install virtualenv```
-
-All systems:
-
-```pip install virtualenv``` or ```pip3 install virtualenv```
-
-### Create a new virtual environment
-
-```virtualenv /opt/zabbix-iib-monitoring/virtualenv```
-
-**NOTE: If you use another path you need to update the path on the first line of zabbix-iib-monitoring.py (as well as any following commands in this guide)**
-
-### Activate virtualenv
-
-```. /opt/zabbix-iib-monitoring/virtualenv/bin/activate```
-
-"(virtualenv)" should appear at the start of the command line once it's activated
-
-### Install required python packages to the virtual environment
-
-The following packages are required:
-- xmljson
-- ConfigParser
-- six
-- paho-mqtt
-
-Install packages with (make sure the virtualenv is activated):
-```pip install xmljson ConfigParser six paho-mqtt```
-
-Once all packages are sucessfully installed the virtualenv is ready, use command ```deactivate``` to exit the virtualenv.
-
-### Copy the file(s) under [etc/zabbix/scripts](etc/zabbix/scripts) to `/etc/zabbix/scripts`
-
-```cp zabbix-iib-monitoring-develop/etc/zabbix/scripts/* /etc/zabbix/scripts/```
-
-### Change ownership of scripts to "zabbix" user 
-
-```chown zabbix:zabbix /etc/zabbix/scripts/*```
-
-### Make all scripts readable and executable 
-
-```chmod a+rx /etc/zabbix/scripts/*```
-
-### Copy the file(s) under [etc/zabbix/zabbix_agentd.d](etc/zabbix/zabbix_agentd.d) to `/etc/zabbix/zabbix_agentd.d`
-
-```cp zabbix-iib-monitoring-develop/etc/zabbix/zabbix_agentd.d/* /etc/zabbix/zabbix_agentd.d/```
-
-### Change ownership of files to "zabbix" user 
-
-```chown zabbix:zabbix /etc/zabbix/zabbix_agentd.d/*```
-
-### Make all files readable 
-
-```chmod a+r /etc/zabbix/zabbix_agentd.d/*```
-
-### Copy files *zabbix-iib-monitor.py*, *zabbix-iib-monitor.ini* and *brokers.txt* to /opt/zabbix-iib-monitoring/scripts 
-
-```mkdir /opt/zabbix-iib-monitoring/scripts```
-
-```cp zabbix-iib-monitoring-develop/zabbix-iib-monitor.* /opt/zabbix-iib-monitoring/scripts```
-
-```cp zabbix-iib-monitoring-develop/brokers.txt /opt/zabbix-iib-monitoring/scripts```
-
-### Make *zabbix-iib-monitor.py* readable and executable 
-
-```chmod a+rx /opt/zabbix-iib-monitoring/scripts/zabbix-iib-monitor.py```
-
-### Make *zabbix-iib-monitor.ini* and *brokers.txt* files readable 
-
-```chmod a+r /opt/zabbix-iib-monitoring/scripts/zabbix-iib-monitor.ini /opt/zabbix-iib-monitoring/scripts/brokers.txt```
+```systemctl daemon-reload```
 
 ## Use
 
@@ -132,13 +53,9 @@ Use command ```mqsichangeflowstats -h``` to see all options.
 
 ```nano /opt/zabbix-iib-monitoring/scripts/broker.txt```
 
-### Switch to zabbix user
+### Start zabbix-iib-monitor service to receive monitoring data (check "/opt/zabbix-iib-monitoring/scripts/zabbix-iib-monitoring.ini" for settings regarding file paths, logging, etc.)
 
-```sudo su - zabbix```
-
-### Run "zabbix-iib-monitoring.py"  to start receiving monitoring data (check "zabbix-iib-monitoring.ini" for settings regarding file paths, logging, etc.)
-
-./opt/zabbix-iib-monitoring/scripts/zabbix-iib-monitoring.py
+```systemctl start zabbix-iib-monitor```
 
 ### (Optional) Test if the scripts are working
 
@@ -152,7 +69,10 @@ Should return something like this:
     }
 ]
 ```
+
 If it did, everything should be ready for adding discovery rules and items to Zabbix
+
+If not check zabbix-iib-monitor service is up and running ```systemctl start zabbix-iib-monitor``` and its logs /var/logs/zabbix-iib-monitor.log
 
 ### In Zabbix add 3 iib.mqtt_topic.discovery rules
    - One with key "iib.mqtt_topic.discovery[node]"
@@ -162,6 +82,6 @@ If it did, everything should be ready for adding discovery rules and items to Za
 ### Add prototype items
    - For rule "iib.mqtt_topic.discovery[node]" use key "iib.node.status[{#TOPIC}]" to get updates on node status
    - For rule "iib.mqtt_topic.discovery[server]" use key "iib.server.status[{#TOPIC}]" to get updates on server status
-   - For rule "iib.mqtt_topic.discovery[messageflow]" use key "iib.messageflow[{#TOPIC}, *dataFieldName*]" where *dataFieldName* is the json field name (Leave parameter empty and set "Type of information" to "text" to see all available fields)
+   - For rule "iib.mqtt_topic.discovery[messageflow]" use key "iib.messageflow[{#TOPIC}, *dataFieldName*]" where *dataFieldName* is the json field name. Leave *dataFieldName* parameter empty and set "Type of information" to "text" to see all available fields. A description for all fields can be found here: https://www.ibm.com/support/knowledgecenter/en/SSRLD6_7.3.0/kqi_userguide/attr_kqitacmf.html
 
 

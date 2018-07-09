@@ -1,0 +1,9 @@
+[Unit]
+Description=zabbix-iib-monitor
+After=multi-user.target
+[Service]
+Type=idle
+Restart=on-failure
+ExecStart=/opt/zabbix-iib-monitor/virtualenv/bin/python /opt/zabbix-iib-monitor/scripts/zabbix-iib-monitor.py
+[Install]
+WantedBy=multi-user.target
