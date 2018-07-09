@@ -72,7 +72,7 @@ Should return something like this:
 
 If it did, everything should be ready for adding discovery rules and items to Zabbix
 
-If not check zabbix-iib-monitor service is up and running ```systemctl start zabbix-iib-monitor``` and its logs /var/logs/zabbix-iib-monitor.log
+If not check zabbix-iib-monitor service is up and running ```systemctl status zabbix-iib-monitor``` and its logs /var/logs/zabbix-iib-monitor.log
 
 ### In Zabbix add 3 iib.mqtt_topic.discovery rules
    - One with key "iib.mqtt_topic.discovery[node]"
