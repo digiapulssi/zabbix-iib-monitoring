@@ -22,8 +22,6 @@ These scripts do **not require** to be installed locally with IBM Integration Bu
 
 ```systemctl daemon-reload```
 
- 
-
 ## Use
 
 ### In IBM Integration Console, adjust data collection interval for each integration node (that you want to monitor) with command:
@@ -71,6 +69,7 @@ Should return something like this:
     }
 ]
 ```
+
 If it did, everything should be ready for adding discovery rules and items to Zabbix
 
 If not check zabbix-iib-monitor service is up and running ```systemctl start zabbix-iib-monitor``` and its logs /var/logs/zabbix-iib-monitor.log
