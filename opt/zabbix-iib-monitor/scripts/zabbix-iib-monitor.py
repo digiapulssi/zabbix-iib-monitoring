@@ -14,7 +14,6 @@ import os
 import re
 import errno
 import types
-import sys
 
 ##### CONFIG #####
 # path to config file
