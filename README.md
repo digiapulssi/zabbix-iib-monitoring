@@ -57,7 +57,7 @@ Use command ```mqsichangeflowstats -h``` to see all options.
 
 ```systemctl start zabbix-iib-monitor```
 
-**NOTE: zabbix-iib-monitor service needs to be restarted after brokers.txt is modified. Command: **```systemctl restart zabbix-iib-monitor```
+**NOTE: zabbix-iib-monitor service needs to be restarted after brokers.txt is modified. Command:** ```systemctl restart zabbix-iib-monitor```
 
 ### (Optional) Test if the scripts are working
 
